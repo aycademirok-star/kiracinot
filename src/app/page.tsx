@@ -5,97 +5,92 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate, ratingAverage, REVIEWS_PAGE_SIZE } from "@/lib/ratings";
 
-const ILLER = [
-  "Adana","Adıyaman","Afyonkarahisar","Ağrı","Amasya","Ankara","Antalya","Artvin",
-  "Aydın","Balıkesir","Bilecik","Bingöl","Bitlis","Bolu","Burdur","Bursa","Çanakkale",
-  "Çankırı","Çorum","Denizli","Diyarbakır","Edirne","Elazığ","Erzincan","Erzurum",
-  "Eskişehir","Gaziantep","Giresun","Gümüşhane","Hakkari","Hatay","Isparta","Mersin",
-  "İstanbul","İzmir","Kars","Kastamonu","Kayseri","Kırklareli","Kırşehir","Kocaeli",
-  "Konya","Kütahya","Malatya","Manisa","Kahramanmaraş","Mardin","Muğla","Muş",
-  "Nevşehir","Niğde","Ordu","Rize","Sakarya","Samsun","Siirt","Sinop","Sivas",
-  "Tekirdağ","Tokat","Trabzon","Tunceli","Şanlıurfa","Uşak","Van","Yozgat","Zonguldak",
-  "Aksaray","Bayburt","Karaman","Kırıkkale","Batman","Şırnak","Bartın","Ardahan",
-  "Iğdır","Yalova","Karabük","Kilis","Osmaniye","Düzce"
-];
-
 type SortKey = "avg_desc" | "avg_asc" | "count_desc";
-
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "avg_desc", label: "Puan (yüksek → düşük)" },
   { value: "avg_asc", label: "Puan (düşük → yüksek)" },
   { value: "count_desc", label: "Yorum sayısı (çok → az)" },
 ];
 
+type IlItem = { id: number; il_adi: string };
+type IlceItem = { id: number; ilce_adi: string };
+type MahalleItem = { id: number; mahalle_adi: string };
+type SokakItem = { id: number; sokak_adi: string };
+
 export default function Home() {
-  const [il, setIl] = useState("");
-  const [ilce, setIlce] = useState("");
-  const [mahalle, setMahalle] = useState("");
-  const [sokak, setSokak] = useState("");
+  const supabase = createClient();
+
+  // Tradres API state
+  const [iller, setIller] = useState<IlItem[]>([]);
+  const [ilceler, setIlceler] = useState<IlceItem[]>([]);
+  const [mahalleler, setMahalleler] = useState<MahalleItem[]>([]);
+  const [sokaklar, setSokaklar] = useState<SokakItem[]>([]);
+  const [illerYuklendi, setIllerYuklendi] = useState(false);
+
+  const [ilId, setIlId] = useState<number | null>(null);
+  const [ilAdi, setIlAdi] = useState("");
+  const [ilceId, setIlceId] = useState<number | null>(null);
+  const [ilceAdi, setIlceAdi] = useState("");
+  const [mahalleId, setMahalleId] = useState<number | null>(null);
+  const [mahalleAdi, setMahalleAdi] = useState("");
+  const [sokakAdi, setSokakAdi] = useState("");
   const [apartman, setApartman] = useState("");
+
   const [sort, setSort] = useState<SortKey>("avg_desc");
   const [reviews, setReviews] = useState<any[]>([]);
   const [properties, setProperties] = useState<any[]>([]);
   const [totalReviews, setTotalReviews] = useState(0);
   const [page, setPage] = useState(1);
-  const [ilceler, setIlceler] = useState<string[]>([]);
-  const [mahalleler, setMahalleler] = useState<string[]>([]);
-  const [sokaklar, setSokaklar] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const supabase = createClient();
+  useEffect(() => { fetchData(); }, [page, sort]);
 
-  // İlçeleri getir
-  useEffect(() => {
-    if (!il) { setIlce(""); setIlceler([]); return; }
-    supabase
-      .from("properties")
-      .select("ilce")
-      .eq("il", il)
-      .then(({ data }) => {
-        const unique = [...new Set((data ?? []).map((d: any) => d.ilce).filter(Boolean))].sort();
-        setIlceler(unique);
-        setIlce("");
-        setMahalle("");
-        setSokak("");
-      });
-  }, [il]);
+  async function illeriYukle() {
+    if (illerYuklendi) return;
+    try {
+      const res = await fetch("https://tradres.com.tr/api/iller");
+      const data = await res.json();
+      setIller(data);
+      setIllerYuklendi(true);
+    } catch {}
+  }
 
-  // Mahalleleri getir
-  useEffect(() => {
-    if (!ilce) { setMahalle(""); setMahalleler([]); return; }
-    supabase
-      .from("properties")
-      .select("mahalle")
-      .eq("il", il)
-      .eq("ilce", ilce)
-      .then(({ data }) => {
-        const unique = [...new Set((data ?? []).map((d: any) => d.mahalle).filter(Boolean))].sort();
-        setMahalleler(unique);
-        setMahalle("");
-        setSokak("");
-      });
-  }, [ilce]);
+  async function ilSecildi(id: number, adi: string) {
+    setIlId(id); setIlAdi(adi);
+    setIlceId(null); setIlceAdi("");
+    setMahalleId(null); setMahalleAdi("");
+    setSokakAdi("");
+    setIlceler([]); setMahalleler([]); setSokaklar([]);
+    if (!id) return;
+    try {
+      const res = await fetch(`https://tradres.com.tr/api/ilceler?il_id=${id}`);
+      setIlceler(await res.json());
+    } catch {}
+  }
 
-  // Sokakları getir
-  useEffect(() => {
-    if (!mahalle) { setSokak(""); setSokaklar([]); return; }
-    supabase
-      .from("properties")
-      .select("adres")
-      .eq("il", il)
-      .eq("ilce", ilce)
-      .eq("mahalle", mahalle)
-      .then(({ data }) => {
-        const unique = [...new Set((data ?? []).map((d: any) => d.adres).filter(Boolean))].sort();
-        setSokaklar(unique);
-        setSokak("");
-      });
-  }, [mahalle]);
+  async function ilceSecildi(id: number, adi: string) {
+    setIlceId(id); setIlceAdi(adi);
+    setMahalleId(null); setMahalleAdi("");
+    setSokakAdi("");
+    setMahalleler([]); setSokaklar([]);
+    if (!id) return;
+    try {
+      const res = await fetch(`https://tradres.com.tr/api/mahalleler?ilce_id=${id}`);
+      setMahalleler(await res.json());
+    } catch {}
+  }
 
-  // Verileri getir
-  useEffect(() => {
-    fetchData();
-  }, [page, sort]);
+  async function mahalleSecildi(id: number, adi: string) {
+    setMahalleId(id); setMahalleAdi(adi);
+    setSokakAdi("");
+    setSokaklar([]);
+    if (!id) return;
+    try {
+      const res = await fetch(`https://tradres.com.tr/api/sokaklar?mahalle_id=${id}`);
+      const data = await res.json();
+      setSokaklar(Array.isArray(data) ? data : []);
+    } catch {}
+  }
 
   async function fetchData(resetPage = false) {
     setLoading(true);
@@ -107,10 +102,7 @@ export default function Home() {
 
     let rq = supabase
       .from("reviews")
-      .select(
-        "id, yazar_adi, yorum_metni, tarih, ev_durumu_puan, ev_sahibi_puan, fiyat_puan, konum_puan, ses_yalitimi_puan, properties:ev_id(id, adres, il, ilce, mahalle)",
-        { count: "exact" }
-      )
+      .select("id, yazar_adi, yorum_metni, tarih, ev_durumu_puan, ev_sahibi_puan, fiyat_puan, konum_puan, ses_yalitimi_puan, properties:ev_id(id, adres, il, ilce, mahalle)", { count: "exact" })
       .order("tarih", { ascending: false })
       .range(from, to);
 
@@ -119,24 +111,22 @@ export default function Home() {
       .select("id, adres, il, ilce, mahalle, reviews(ev_durumu_puan, ev_sahibi_puan, fiyat_puan, konum_puan, ses_yalitimi_puan)")
       .limit(120);
 
-    if (il) { rq = rq.eq("properties.il", il); pq = pq.eq("il", il); }
-    if (ilce) { rq = rq.eq("properties.ilce", ilce); pq = pq.eq("ilce", ilce); }
-    if (mahalle) { rq = rq.eq("properties.mahalle", mahalle); pq = pq.eq("mahalle", mahalle); }
-    if (sokak || apartman) {
-      const q = [sokak, apartman].filter(Boolean).join(" ");
+    if (ilAdi) pq = pq.eq("il", ilAdi);
+    if (ilceAdi) pq = pq.eq("ilce", ilceAdi);
+    if (mahalleAdi) pq = pq.eq("mahalle", mahalleAdi);
+    if (sokakAdi || apartman) {
+      const q = [sokakAdi, apartman].filter(Boolean).join(" ");
       pq = pq.ilike("adres", `%${q}%`);
     }
 
     const [{ data: rd, count }, { data: pd }] = await Promise.all([rq, pq]);
 
     setTotalReviews(count ?? 0);
-    setReviews(
-      ((rd ?? []) as any[]).map((r) => ({
-        ...r,
-        properties: r.properties?.[0] ?? null,
-        ortalamaPuan: ratingAverage(r),
-      }))
-    );
+    setReviews(((rd ?? []) as any[]).map((r) => ({
+      ...r,
+      properties: r.properties?.[0] ?? null,
+      ortalamaPuan: ratingAverage(r),
+    })));
 
     let props = ((pd ?? []) as any[])
       .map((p) => {
@@ -163,47 +153,64 @@ export default function Home() {
         <p className="mt-2 text-zinc-600">İl, ilçe, mahalle ve sokak seçerek ara.</p>
 
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {/* İl */}
           <div>
             <label className="mb-1 block text-sm text-zinc-600">İl</label>
-            <select value={il} onChange={(e) => setIl(e.target.value)}
+            <select value={ilId ?? ""} onFocus={illeriYukle}
+              onChange={(e) => {
+                const id = Number(e.target.value);
+                const adi = iller.find(i => i.id === id)?.il_adi ?? "";
+                ilSecildi(id, adi);
+              }}
               className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2">
               <option value="">Seçiniz</option>
-              {ILLER.map((i) => <option key={i} value={i}>{i}</option>)}
+              {iller.map((i) => <option key={i.id} value={i.id}>{i.il_adi}</option>)}
             </select>
           </div>
 
-          {/* İlçe */}
           <div>
             <label className="mb-1 block text-sm text-zinc-600">İlçe</label>
-            <select value={ilce} onChange={(e) => setIlce(e.target.value)} disabled={!il}
+            <select value={ilceId ?? ""} disabled={!ilId}
+              onChange={(e) => {
+                const id = Number(e.target.value);
+                const adi = ilceler.find(i => i.id === id)?.ilce_adi ?? "";
+                ilceSecildi(id, adi);
+              }}
               className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2 disabled:opacity-50">
               <option value="">Seçiniz</option>
-              {ilceler.map((i) => <option key={i} value={i}>{i}</option>)}
+              {ilceler.map((i) => <option key={i.id} value={i.id}>{i.ilce_adi}</option>)}
             </select>
           </div>
 
-          {/* Mahalle */}
           <div>
             <label className="mb-1 block text-sm text-zinc-600">Mahalle</label>
-            <select value={mahalle} onChange={(e) => setMahalle(e.target.value)} disabled={!ilce}
+            <select value={mahalleId ?? ""} disabled={!ilceId}
+              onChange={(e) => {
+                const id = Number(e.target.value);
+                const adi = mahalleler.find(m => m.id === id)?.mahalle_adi ?? "";
+                mahalleSecildi(id, adi);
+              }}
               className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2 disabled:opacity-50">
               <option value="">Seçiniz</option>
-              {mahalleler.map((i) => <option key={i} value={i}>{i}</option>)}
+              {mahalleler.map((m) => <option key={m.id} value={m.id}>{m.mahalle_adi}</option>)}
             </select>
           </div>
 
-          {/* Sokak */}
           <div>
             <label className="mb-1 block text-sm text-zinc-600">Sokak</label>
-            <select value={sokak} onChange={(e) => setSokak(e.target.value)} disabled={!mahalle}
-              className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2 disabled:opacity-50">
-              <option value="">Seçiniz</option>
-              {sokaklar.map((i) => <option key={i} value={i}>{i}</option>)}
-            </select>
+            {sokaklar.length > 0 ? (
+              <select value={sokakAdi} disabled={!mahalleId}
+                onChange={(e) => setSokakAdi(e.target.value)}
+                className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2 disabled:opacity-50">
+                <option value="">Seçiniz</option>
+                {sokaklar.map((s) => <option key={s.id} value={s.sokak_adi}>{s.sokak_adi}</option>)}
+              </select>
+            ) : (
+              <input value={sokakAdi} onChange={(e) => setSokakAdi(e.target.value)}
+                placeholder="Sokak adı"
+                className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
+            )}
           </div>
 
-          {/* Apartman No */}
           <div>
             <label className="mb-1 block text-sm text-zinc-600">Apartman No</label>
             <input value={apartman} onChange={(e) => setApartman(e.target.value)}
@@ -211,7 +218,6 @@ export default function Home() {
               className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
           </div>
 
-          {/* Sıralama */}
           <div>
             <label className="mb-1 block text-sm text-zinc-600">Sıralama</label>
             <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)}
@@ -236,9 +242,7 @@ export default function Home() {
       <section className="grid gap-8 lg:grid-cols-2">
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
           <h2 className="text-xl font-semibold text-zinc-900">Son Eklenen Yorumlar</h2>
-          <p className="mt-1 text-sm text-zinc-500">
-            Sayfa {page} / {totalPages} · Toplam {totalReviews} eşleşen yorum
-          </p>
+          <p className="mt-1 text-sm text-zinc-500">Sayfa {page} / {totalPages} · Toplam {totalReviews} eşleşen yorum</p>
           <div className="mt-4 space-y-4">
             {reviews.length === 0 && (
               <p className="rounded-lg bg-zinc-50 p-4 text-sm text-zinc-600">Bu arama için yorum bulunamadı.</p>
@@ -276,15 +280,11 @@ export default function Home() {
             <nav className="mt-6 flex flex-wrap items-center justify-center gap-2">
               {page > 1 && (
                 <button onClick={() => setPage(page - 1)}
-                  className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-50">
-                  Önceki
-                </button>
+                  className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-50">Önceki</button>
               )}
               {page < totalPages && (
                 <button onClick={() => setPage(page + 1)}
-                  className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-50">
-                  Sonraki
-                </button>
+                  className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-50">Sonraki</button>
               )}
             </nav>
           )}
@@ -292,9 +292,7 @@ export default function Home() {
 
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
           <h2 className="text-xl font-semibold text-zinc-900">Ortalama Puanlar</h2>
-          <p className="mt-1 text-sm text-zinc-500">
-            Sıralama: {SORT_OPTIONS.find((o) => o.value === sort)?.label ?? "—"}
-          </p>
+          <p className="mt-1 text-sm text-zinc-500">Sıralama: {SORT_OPTIONS.find((o) => o.value === sort)?.label ?? "—"}</p>
           <div className="mt-4 space-y-3">
             {properties.length === 0 && (
               <p className="rounded-lg bg-zinc-50 p-4 text-sm text-zinc-600">Bu arama için puanlanmış ev bulunamadı.</p>
