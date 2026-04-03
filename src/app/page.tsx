@@ -155,7 +155,7 @@ export default function Home() {
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <div>
             <label className="mb-1 block text-sm text-zinc-600">İl</label>
-            <select value={ilId ?? ""} onFocus={illeriYukle}
+            <select value={ilId ?? ""} onFocus={illeriYukle} onClick={illeriYukle}
               onChange={(e) => {
                 const id = Number(e.target.value);
                 const adi = iller.find(i => i.id === id)?.il_adi ?? "";
