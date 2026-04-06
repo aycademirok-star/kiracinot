@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
+const API = "https://turkey-geolocation-rest-api.vercel.app";
+
 const KATEGORILER = [
   { key: "ev_durumu_puan", label: "Ev Genel Durumu" },
   { key: "ev_sahibi_puan", label: "Ev Sahibi" },
@@ -25,25 +27,18 @@ function YildizSecici({ value, onChange }: { value: number; onChange: (v: number
   );
 }
 
-type IlItem = { id: number; il_adi: string };
-type IlceItem = { id: number; ilce_adi: string };
-type MahalleItem = { id: number; mahalle_adi: string };
-type SokakItem = { id: number; sokak_adi: string };
-
 export default function YorumEklePage() {
   const router = useRouter();
   const supabase = createClient();
 
-  const [iller, setIller] = useState<IlItem[]>([]);
-  const [ilceler, setIlceler] = useState<IlceItem[]>([]);
-  const [mahalleler, setMahalleler] = useState<MahalleItem[]>([]);
-  const [sokaklar, setSokaklar] = useState<SokakItem[]>([]);
+  const [iller, setIller] = useState<any[]>([]);
+  const [ilceler, setIlceler] = useState<any[]>([]);
+  const [mahalleler, setMahalleler] = useState<any[]>([]);
 
   const [ilId, setIlId] = useState<number | null>(null);
   const [ilAdi, setIlAdi] = useState("");
   const [ilceId, setIlceId] = useState<number | null>(null);
   const [ilceAdi, setIlceAdi] = useState("");
-  const [mahalleId, setMahalleId] = useState<number | null>(null);
   const [mahalleAdi, setMahalleAdi] = useState("");
   const [sokakAdi, setSokakAdi] = useState("");
   const [apartmanNo, setApartmanNo] = useState("");
@@ -51,7 +46,6 @@ export default function YorumEklePage() {
   const [illerYuklendi, setIllerYuklendi] = useState(false);
   const [ilcelerYukleniyor, setIlcelerYukleniyor] = useState(false);
   const [mahallelerYukleniyor, setMahallelerYukleniyor] = useState(false);
-  const [sokaklarYukleniyor, setSokaklarYukleniyor] = useState(false);
 
   const [yazarAdi, setYazarAdi] = useState("");
   const [yorumMetni, setYorumMetni] = useState("");
@@ -65,27 +59,26 @@ export default function YorumEklePage() {
   async function illeriYukle() {
     if (illerYuklendi) return;
     try {
-      const res = await fetch("https://tradres.com.tr/api/iller");
-      const data = await res.json();
-      setIller(data);
+      const res = await fetch(`${API}/cities`);
+      const json = await res.json();
+      setIller(json.data ?? json);
       setIllerYuklendi(true);
     } catch {
-      setHata("İller yüklenemedi. Lütfen sayfayı yenileyin.");
+      setHata("İller yüklenemedi.");
     }
   }
 
   async function ilSecildi(id: number, adi: string) {
     setIlId(id); setIlAdi(adi);
     setIlceId(null); setIlceAdi("");
-    setMahalleId(null); setMahalleAdi("");
-    setSokakAdi("");
-    setIlceler([]); setMahalleler([]); setSokaklar([]);
+    setMahalleAdi(""); setSokakAdi("");
+    setIlceler([]); setMahalleler([]);
     if (!id) return;
     setIlcelerYukleniyor(true);
     try {
-      const res = await fetch(`https://tradres.com.tr/api/ilceler?il_id=${id}`);
-      const data = await res.json();
-      setIlceler(data);
+      const res = await fetch(`${API}/cities/${id}?fields=city,towns`);
+      const json = await res.json();
+      setIlceler(json.data?.towns ?? json.towns ?? []);
     } catch {
       setHata("İlçeler yüklenemedi.");
     } finally {
@@ -95,36 +88,18 @@ export default function YorumEklePage() {
 
   async function ilceSecildi(id: number, adi: string) {
     setIlceId(id); setIlceAdi(adi);
-    setMahalleId(null); setMahalleAdi("");
-    setSokakAdi("");
-    setMahalleler([]); setSokaklar([]);
+    setMahalleAdi(""); setSokakAdi("");
+    setMahalleler([]);
     if (!id) return;
     setMahallelerYukleniyor(true);
     try {
-      const res = await fetch(`https://tradres.com.tr/api/mahalleler?ilce_id=${id}`);
-      const data = await res.json();
-      setMahalleler(data);
+      const res = await fetch(`${API}/towns/${id}?fields=name,districts`);
+      const json = await res.json();
+      setMahalleler(json.data?.districts ?? json.districts ?? []);
     } catch {
       setHata("Mahalleler yüklenemedi.");
     } finally {
       setMahallelerYukleniyor(false);
-    }
-  }
-
-  async function mahalleSecildi(id: number, adi: string) {
-    setMahalleId(id); setMahalleAdi(adi);
-    setSokakAdi("");
-    setSokaklar([]);
-    if (!id) return;
-    setSokaklarYukleniyor(true);
-    try {
-      const res = await fetch(`https://tradres.com.tr/api/sokaklar?mahalle_id=${id}`);
-      const data = await res.json();
-      setSokaklar(Array.isArray(data) ? data : []);
-    } catch {
-      setSokaklar([]);
-    } finally {
-      setSokaklarYukleniyor(false);
     }
   }
 
@@ -197,22 +172,20 @@ export default function YorumEklePage() {
       </div>
 
       <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm space-y-6">
-
         <div>
           <h2 className="text-lg font-semibold text-zinc-900 mb-3">📍 Adres Bilgileri</h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-
             <div>
               <label className="mb-1 block text-sm text-zinc-600">İl *</label>
-              <select value={ilId ?? ""} onFocus={illeriYukle}
+              <select value={ilId ?? ""} onFocus={illeriYukle} onClick={illeriYukle}
                 onChange={(e) => {
                   const id = Number(e.target.value);
-                  const adi = iller.find(i => i.id === id)?.il_adi ?? "";
+                  const adi = iller.find((i: any) => i._id === id)?.city ?? "";
                   ilSecildi(id, adi);
                 }}
                 className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2">
                 <option value="">Seçiniz</option>
-                {iller.map((i) => <option key={i.id} value={i.id}>{i.il_adi}</option>)}
+                {iller.map((i: any) => <option key={i._id} value={i._id}>{i.city}</option>)}
               </select>
             </div>
 
@@ -221,44 +194,29 @@ export default function YorumEklePage() {
               <select value={ilceId ?? ""} disabled={!ilId}
                 onChange={(e) => {
                   const id = Number(e.target.value);
-                  const adi = ilceler.find(i => i.id === id)?.ilce_adi ?? "";
+                  const adi = ilceler.find((i: any) => i._id === id)?.name ?? "";
                   ilceSecildi(id, adi);
                 }}
                 className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2 disabled:opacity-50">
                 <option value="">{ilcelerYukleniyor ? "Yükleniyor..." : "Seçiniz"}</option>
-                {ilceler.map((i) => <option key={i.id} value={i.id}>{i.ilce_adi}</option>)}
+                {ilceler.map((i: any) => <option key={i._id} value={i._id}>{i.name}</option>)}
               </select>
             </div>
 
             <div>
               <label className="mb-1 block text-sm text-zinc-600">Mahalle *</label>
-              <select value={mahalleId ?? ""} disabled={!ilceId}
-                onChange={(e) => {
-                  const id = Number(e.target.value);
-                  const adi = mahalleler.find(m => m.id === id)?.mahalle_adi ?? "";
-                  mahalleSecildi(id, adi);
-                }}
+              <select value={mahalleAdi} disabled={!ilceId}
+                onChange={(e) => setMahalleAdi(e.target.value)}
                 className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2 disabled:opacity-50">
                 <option value="">{mahallelerYukleniyor ? "Yükleniyor..." : "Seçiniz"}</option>
-                {mahalleler.map((m) => <option key={m.id} value={m.id}>{m.mahalle_adi}</option>)}
+                {mahalleler.map((m: any) => <option key={m._id} value={m.name}>{m.name}</option>)}
               </select>
             </div>
 
             <div>
               <label className="mb-1 block text-sm text-zinc-600">Sokak / Cadde</label>
-              {sokaklar.length > 0 ? (
-                <select value={sokakAdi} disabled={!mahalleId}
-                  onChange={(e) => setSokakAdi(e.target.value)}
-                  className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2 disabled:opacity-50">
-                  <option value="">{sokaklarYukleniyor ? "Yükleniyor..." : "Seçiniz"}</option>
-                  {sokaklar.map((s) => <option key={s.id} value={s.sokak_adi}>{s.sokak_adi}</option>)}
-                </select>
-              ) : (
-                <input placeholder={sokaklarYukleniyor ? "Yükleniyor..." : "Örn: Atatürk Cad."}
-                  value={sokakAdi} onChange={(e) => setSokakAdi(e.target.value)}
-                  disabled={sokaklarYukleniyor}
-                  className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2 disabled:opacity-50" />
-              )}
+              <input placeholder="Örn: Atatürk Cad." value={sokakAdi} onChange={(e) => setSokakAdi(e.target.value)}
+                className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
             </div>
 
             <div>
@@ -266,7 +224,6 @@ export default function YorumEklePage() {
               <input placeholder="Örn: 12" value={apartmanNo} onChange={(e) => setApartmanNo(e.target.value)}
                 className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
             </div>
-
           </div>
         </div>
 

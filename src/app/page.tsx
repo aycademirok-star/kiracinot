@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate, ratingAverage, REVIEWS_PAGE_SIZE } from "@/lib/ratings";
 
+const API = "https://turkey-geolocation-rest-api.vercel.app";
+
 type SortKey = "avg_desc" | "avg_asc" | "count_desc";
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "avg_desc", label: "Puan (yüksek → düşük)" },
@@ -12,26 +14,17 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "count_desc", label: "Yorum sayısı (çok → az)" },
 ];
 
-type IlItem = { id: number; il_adi: string };
-type IlceItem = { id: number; ilce_adi: string };
-type MahalleItem = { id: number; mahalle_adi: string };
-type SokakItem = { id: number; sokak_adi: string };
-
 export default function Home() {
   const supabase = createClient();
 
-  // Tradres API state
-  const [iller, setIller] = useState<IlItem[]>([]);
-  const [ilceler, setIlceler] = useState<IlceItem[]>([]);
-  const [mahalleler, setMahalleler] = useState<MahalleItem[]>([]);
-  const [sokaklar, setSokaklar] = useState<SokakItem[]>([]);
-  const [illerYuklendi, setIllerYuklendi] = useState(false);
+  const [iller, setIller] = useState<any[]>([]);
+  const [ilceler, setIlceler] = useState<any[]>([]);
+  const [mahalleler, setMahalleler] = useState<any[]>([]);
 
   const [ilId, setIlId] = useState<number | null>(null);
   const [ilAdi, setIlAdi] = useState("");
   const [ilceId, setIlceId] = useState<number | null>(null);
   const [ilceAdi, setIlceAdi] = useState("");
-  const [mahalleId, setMahalleId] = useState<number | null>(null);
   const [mahalleAdi, setMahalleAdi] = useState("");
   const [sokakAdi, setSokakAdi] = useState("");
   const [apartman, setApartman] = useState("");
@@ -42,15 +35,16 @@ export default function Home() {
   const [totalReviews, setTotalReviews] = useState(0);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [illerYuklendi, setIllerYuklendi] = useState(false);
 
   useEffect(() => { fetchData(); }, [page, sort]);
 
   async function illeriYukle() {
     if (illerYuklendi) return;
     try {
-      const res = await fetch("https://tradres.com.tr/api/iller");
-      const data = await res.json();
-      setIller(data);
+      const res = await fetch(`${API}/cities`);
+      const json = await res.json();
+      setIller(json.data ?? json);
       setIllerYuklendi(true);
     } catch {}
   }
@@ -58,37 +52,27 @@ export default function Home() {
   async function ilSecildi(id: number, adi: string) {
     setIlId(id); setIlAdi(adi);
     setIlceId(null); setIlceAdi("");
-    setMahalleId(null); setMahalleAdi("");
-    setSokakAdi("");
-    setIlceler([]); setMahalleler([]); setSokaklar([]);
+    setMahalleAdi(""); setSokakAdi("");
+    setIlceler([]); setMahalleler([]);
     if (!id) return;
     try {
-      const res = await fetch(`https://tradres.com.tr/api/ilceler?il_id=${id}`);
-      setIlceler(await res.json());
+      const res = await fetch(`${API}/cities/${id}?fields=city,towns`);
+      const json = await res.json();
+      const towns = json.data?.towns ?? json.towns ?? [];
+      setIlceler(towns);
     } catch {}
   }
 
   async function ilceSecildi(id: number, adi: string) {
     setIlceId(id); setIlceAdi(adi);
-    setMahalleId(null); setMahalleAdi("");
-    setSokakAdi("");
-    setMahalleler([]); setSokaklar([]);
+    setMahalleAdi(""); setSokakAdi("");
+    setMahalleler([]);
     if (!id) return;
     try {
-      const res = await fetch(`https://tradres.com.tr/api/mahalleler?ilce_id=${id}`);
-      setMahalleler(await res.json());
-    } catch {}
-  }
-
-  async function mahalleSecildi(id: number, adi: string) {
-    setMahalleId(id); setMahalleAdi(adi);
-    setSokakAdi("");
-    setSokaklar([]);
-    if (!id) return;
-    try {
-      const res = await fetch(`https://tradres.com.tr/api/sokaklar?mahalle_id=${id}`);
-      const data = await res.json();
-      setSokaklar(Array.isArray(data) ? data : []);
+      const res = await fetch(`${API}/towns/${id}?fields=name,districts`);
+      const json = await res.json();
+      const districts = json.data?.districts ?? json.districts ?? [];
+      setMahalleler(districts);
     } catch {}
   }
 
@@ -158,12 +142,12 @@ export default function Home() {
             <select value={ilId ?? ""} onFocus={illeriYukle} onClick={illeriYukle}
               onChange={(e) => {
                 const id = Number(e.target.value);
-                const adi = iller.find(i => i.id === id)?.il_adi ?? "";
+                const adi = iller.find((i: any) => i._id === id)?.city ?? "";
                 ilSecildi(id, adi);
               }}
               className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2">
               <option value="">Seçiniz</option>
-              {iller.map((i) => <option key={i.id} value={i.id}>{i.il_adi}</option>)}
+              {iller.map((i: any) => <option key={i._id} value={i._id}>{i.city}</option>)}
             </select>
           </div>
 
@@ -172,43 +156,30 @@ export default function Home() {
             <select value={ilceId ?? ""} disabled={!ilId}
               onChange={(e) => {
                 const id = Number(e.target.value);
-                const adi = ilceler.find(i => i.id === id)?.ilce_adi ?? "";
+                const adi = ilceler.find((i: any) => i._id === id)?.name ?? "";
                 ilceSecildi(id, adi);
               }}
               className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2 disabled:opacity-50">
               <option value="">Seçiniz</option>
-              {ilceler.map((i) => <option key={i.id} value={i.id}>{i.ilce_adi}</option>)}
+              {ilceler.map((i: any) => <option key={i._id} value={i._id}>{i.name}</option>)}
             </select>
           </div>
 
           <div>
             <label className="mb-1 block text-sm text-zinc-600">Mahalle</label>
-            <select value={mahalleId ?? ""} disabled={!ilceId}
-              onChange={(e) => {
-                const id = Number(e.target.value);
-                const adi = mahalleler.find(m => m.id === id)?.mahalle_adi ?? "";
-                mahalleSecildi(id, adi);
-              }}
+            <select value={mahalleAdi} disabled={!ilceId}
+              onChange={(e) => setMahalleAdi(e.target.value)}
               className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2 disabled:opacity-50">
               <option value="">Seçiniz</option>
-              {mahalleler.map((m) => <option key={m.id} value={m.id}>{m.mahalle_adi}</option>)}
+              {mahalleler.map((m: any) => <option key={m._id} value={m.name}>{m.name}</option>)}
             </select>
           </div>
 
           <div>
             <label className="mb-1 block text-sm text-zinc-600">Sokak</label>
-            {sokaklar.length > 0 ? (
-              <select value={sokakAdi} disabled={!mahalleId}
-                onChange={(e) => setSokakAdi(e.target.value)}
-                className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2 disabled:opacity-50">
-                <option value="">Seçiniz</option>
-                {sokaklar.map((s) => <option key={s.id} value={s.sokak_adi}>{s.sokak_adi}</option>)}
-              </select>
-            ) : (
-              <input value={sokakAdi} onChange={(e) => setSokakAdi(e.target.value)}
-                placeholder="Sokak adı"
-                className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
-            )}
+            <input value={sokakAdi} onChange={(e) => setSokakAdi(e.target.value)}
+              placeholder="Sokak adı"
+              className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
           </div>
 
           <div>
