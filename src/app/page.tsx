@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate, ratingAverage, REVIEWS_PAGE_SIZE } from "@/lib/ratings";
 
-const API = "https://turkey-geolocation-rest-api.vercel.app";
+const API = "";
 
 type SortKey = "avg_desc" | "avg_asc" | "count_desc";
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
@@ -42,7 +42,7 @@ export default function Home() {
   async function illeriYukle() {
     if (illerYuklendi) return;
     try {
-      const res = await fetch(`${API}/cities`);
+      const res = await fetch(`/api/adres?tip=iller`);
       const json = await res.json();
       setIller(json.data ?? json);
       setIllerYuklendi(true);
@@ -56,7 +56,7 @@ export default function Home() {
     setIlceler([]); setMahalleler([]);
     if (!id) return;
     try {
-      const res = await fetch(`${API}/cities/${id}?fields=city,towns`);
+      const res = await fetch(`/api/adres?tip=ilceler&id=${id}`;
       const json = await res.json();
       const towns = json.data?.towns ?? json.towns ?? [];
       setIlceler(towns);
@@ -69,7 +69,7 @@ export default function Home() {
     setMahalleler([]);
     if (!id) return;
     try {
-      const res = await fetch(`${API}/towns/${id}?fields=name,districts`);
+      const res = await fetch(`/api/adres?tip=mahalleler&id=${id}`;
       const json = await res.json();
       const districts = json.data?.districts ?? json.districts ?? [];
       setMahalleler(districts);

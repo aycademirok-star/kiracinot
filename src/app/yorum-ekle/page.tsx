@@ -59,7 +59,7 @@ export default function YorumEklePage() {
   async function illeriYukle() {
     if (illerYuklendi) return;
     try {
-      const res = await fetch(`${API}/cities`);
+      const res = await fetch(/api/adres?tip=iller);
       const json = await res.json();
       setIller(json.data ?? json);
       setIllerYuklendi(true);
@@ -76,7 +76,7 @@ export default function YorumEklePage() {
     if (!id) return;
     setIlcelerYukleniyor(true);
     try {
-      const res = await fetch(`${API}/cities/${id}?fields=city,towns`);
+      const res = await fetch(`/api/adres?tip=ilceler&id=${id}`);
       const json = await res.json();
       setIlceler(json.data?.towns ?? json.towns ?? []);
     } catch {
@@ -93,7 +93,7 @@ export default function YorumEklePage() {
     if (!id) return;
     setMahallelerYukleniyor(true);
     try {
-      const res = await fetch(`${API}/towns/${id}?fields=name,districts`);
+      const res = await fetch(`/api/adres?tip=mahalleler&id=${id}`);
       const json = await res.json();
       setMahalleler(json.data?.districts ?? json.districts ?? []);
     } catch {
