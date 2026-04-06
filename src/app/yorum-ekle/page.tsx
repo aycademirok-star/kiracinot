@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-const API = "https://turkey-geolocation-rest-api.vercel.app";
-
 const KATEGORILER = [
   { key: "ev_durumu_puan", label: "Ev Genel Durumu" },
   { key: "ev_sahibi_puan", label: "Ev Sahibi" },
@@ -19,7 +17,7 @@ function YildizSecici({ value, onChange }: { value: number; onChange: (v: number
     <div className="flex gap-1">
       {[1, 2, 3, 4, 5].map((star) => (
         <button key={star} type="button" onClick={() => onChange(star)}
-          className={`text-2xl transition ${star <= value ? "text-yellow-400" : "text-zinc-300"} hover:text-yellow-400`}>
+          className={"text-2xl transition " + (star <= value ? "text-yellow-400" : "text-zinc-300") + " hover:text-yellow-400"}>
           ★
         </button>
       ))}
@@ -59,7 +57,7 @@ export default function YorumEklePage() {
   async function illeriYukle() {
     if (illerYuklendi) return;
     try {
-      const res = await fetch(/api/adres?tip=iller);
+      const res = await fetch("/api/adres?tip=iller");
       const json = await res.json();
       setIller(json.data ?? json);
       setIllerYuklendi(true);
@@ -76,7 +74,7 @@ export default function YorumEklePage() {
     if (!id) return;
     setIlcelerYukleniyor(true);
     try {
-      const res = await fetch(`/api/adres?tip=ilceler&id=${id}`);
+      const res = await fetch("/api/adres?tip=ilceler&id=" + id);
       const json = await res.json();
       setIlceler(json.data?.towns ?? json.towns ?? []);
     } catch {
@@ -93,7 +91,7 @@ export default function YorumEklePage() {
     if (!id) return;
     setMahallelerYukleniyor(true);
     try {
-      const res = await fetch(`/api/adres?tip=mahalleler&id=${id}`);
+      const res = await fetch("/api/adres?tip=mahalleler&id=" + id);
       const json = await res.json();
       setMahalleler(json.data?.districts ?? json.districts ?? []);
     } catch {
@@ -114,7 +112,7 @@ export default function YorumEklePage() {
     }
     const eksikPuan = KATEGORILER.find((k) => puanlar[k.key as keyof typeof puanlar] === 0);
     if (eksikPuan) {
-      setHata(`Lütfen "${eksikPuan.label}" için puan veriniz.`);
+      setHata("Lütfen \"" + eksikPuan.label + "\" için puan veriniz.");
       return;
     }
     if (!yorumMetni.trim()) {
@@ -128,8 +126,8 @@ export default function YorumEklePage() {
     try {
       const adresParcalari = [];
       if (sokakAdi) adresParcalari.push(sokakAdi);
-      if (apartmanNo) adresParcalari.push(`No: ${apartmanNo}`);
-      const adres = adresParcalari.length > 0 ? adresParcalari.join(" ") : `${mahalleAdi} Mah.`;
+      if (apartmanNo) adresParcalari.push("No: " + apartmanNo);
+      const adres = adresParcalari.length > 0 ? adresParcalari.join(" ") : mahalleAdi + " Mah.";
 
       const { data: existingProps } = await supabase
         .from("properties").select("id")
@@ -156,7 +154,7 @@ export default function YorumEklePage() {
       });
       if (reviewError) throw reviewError;
 
-      router.push(`/ev/${propertyId}`);
+      router.push("/ev/" + propertyId);
     } catch (err: any) {
       setHata("Bir hata oluştu: " + (err.message ?? "Bilinmeyen hata"));
     } finally {

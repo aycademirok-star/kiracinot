@@ -5,8 +5,6 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate, ratingAverage, REVIEWS_PAGE_SIZE } from "@/lib/ratings";
 
-const API = "";
-
 type SortKey = "avg_desc" | "avg_asc" | "count_desc";
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "avg_desc", label: "Puan (yüksek → düşük)" },
@@ -42,7 +40,7 @@ export default function Home() {
   async function illeriYukle() {
     if (illerYuklendi) return;
     try {
-      const res = await fetch(`/api/adres?tip=iller`);
+      const res = await fetch("/api/adres?tip=iller");
       const json = await res.json();
       setIller(json.data ?? json);
       setIllerYuklendi(true);
@@ -56,10 +54,9 @@ export default function Home() {
     setIlceler([]); setMahalleler([]);
     if (!id) return;
     try {
-      const res = await fetch(`/api/adres?tip=ilceler&id=${id}`;
+      const res = await fetch("/api/adres?tip=ilceler&id=" + id);
       const json = await res.json();
-      const towns = json.data?.towns ?? json.towns ?? [];
-      setIlceler(towns);
+      setIlceler(json.data?.towns ?? json.towns ?? []);
     } catch {}
   }
 
@@ -69,10 +66,9 @@ export default function Home() {
     setMahalleler([]);
     if (!id) return;
     try {
-      const res = await fetch(`/api/adres?tip=mahalleler&id=${id}`;
+      const res = await fetch("/api/adres?tip=mahalleler&id=" + id);
       const json = await res.json();
-      const districts = json.data?.districts ?? json.districts ?? [];
-      setMahalleler(districts);
+      setMahalleler(json.data?.districts ?? json.districts ?? []);
     } catch {}
   }
 
@@ -100,7 +96,7 @@ export default function Home() {
     if (mahalleAdi) pq = pq.eq("mahalle", mahalleAdi);
     if (sokakAdi || apartman) {
       const q = [sokakAdi, apartman].filter(Boolean).join(" ");
-      pq = pq.ilike("adres", `%${q}%`);
+      pq = pq.ilike("adres", "%" + q + "%");
     }
 
     const [{ data: rd, count }, { data: pd }] = await Promise.all([rq, pq]);
@@ -229,7 +225,7 @@ export default function Home() {
                   </div>
                   <p className="mt-1 text-sm text-zinc-500">
                     {review.properties
-                      ? `${review.properties.mahalle}, ${review.properties.ilce} / ${review.properties.il}`
+                      ? review.properties.mahalle + ", " + review.properties.ilce + " / " + review.properties.il
                       : "Adres bilgisi yok"}
                   </p>
                   <p className="mt-3 text-sm text-zinc-700">{review.yorum_metni}</p>
@@ -238,7 +234,7 @@ export default function Home() {
               );
               if (review.properties) {
                 return (
-                  <Link key={review.id} href={`/ev/${review.properties.id}`}
+                  <Link key={review.id} href={"/ev/" + review.properties.id}
                     className="block rounded-xl border p-4 transition hover:border-zinc-400 hover:bg-zinc-50">
                     {inner}
                   </Link>
@@ -269,7 +265,7 @@ export default function Home() {
               <p className="rounded-lg bg-zinc-50 p-4 text-sm text-zinc-600">Bu arama için puanlanmış ev bulunamadı.</p>
             )}
             {properties.map((property) => (
-              <Link key={property.id} href={`/ev/${property.id}`}
+              <Link key={property.id} href={"/ev/" + property.id}
                 className="flex items-start justify-between gap-4 rounded-xl border p-4 transition hover:border-zinc-400 hover:bg-zinc-50">
                 <div className="min-w-0">
                   <p className="font-medium text-zinc-900">{property.adres}</p>
