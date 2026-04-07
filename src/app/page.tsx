@@ -196,7 +196,7 @@ export default function Home() {
         <div className="mt-4 flex gap-3">
           <button onClick={() => fetchData(true)} disabled={loading}
             className="h-11 rounded-xl bg-zinc-900 px-6 font-medium text-white hover:bg-zinc-700 disabled:opacity-50">
-            {loading ? "Aranıyor..." : "Ara"}
+            {loading ? "Aranıyor..." : "Yorum Ara"}
           </button>
           <Link href="/yorum-ekle"
             className="h-11 rounded-xl border border-zinc-300 px-6 font-medium text-zinc-900 hover:bg-zinc-50 flex items-center">
