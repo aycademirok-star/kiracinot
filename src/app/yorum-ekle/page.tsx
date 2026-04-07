@@ -40,6 +40,7 @@ export default function YorumEklePage() {
   const [mahalleAdi, setMahalleAdi] = useState("");
   const [sokakAdi, setSokakAdi] = useState("");
   const [apartmanNo, setApartmanNo] = useState("");
+  const [daireNo, setDaireNo] = useState("");
 
   const [illerYuklendi, setIllerYuklendi] = useState(false);
   const [ilcelerYukleniyor, setIlcelerYukleniyor] = useState(false);
@@ -220,6 +221,18 @@ export default function YorumEklePage() {
             <div>
               <label className="mb-1 block text-sm text-zinc-600">Apartman No</label>
               <input placeholder="Örn: 12" value={apartmanNo} onChange={(e) => setApartmanNo(e.target.value)}
+                className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm text-zinc-600">Daire No</label>
+              <input placeholder="Örn: 5" value={daireNo} onChange={(e) => setDaireNo(e.target.value)}
+                className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm text-zinc-600">Daire No</label>
+              <input placeholder="Örn: 5" value={daireNo} onChange={(e) => setDaireNo(e.target.value)}
                 className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
             </div>
           </div>
