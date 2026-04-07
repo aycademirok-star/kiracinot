@@ -229,12 +229,6 @@ export default function YorumEklePage() {
               <input placeholder="Örn: 5" value={daireNo} onChange={(e) => setDaireNo(e.target.value)}
                 className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
             </div>
-
-            <div>
-              <label className="mb-1 block text-sm text-zinc-600">Daire No</label>
-              <input placeholder="Örn: 5" value={daireNo} onChange={(e) => setDaireNo(e.target.value)}
-                className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
-            </div>
           </div>
         </div>
 
