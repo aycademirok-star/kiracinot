@@ -12,10 +12,13 @@ import { useState, useMemo } from "react";
 
 const initialScores: Record<CategoryKey, number> = {
   ev_durumu_puan: 5,
-  ev_sahibi_puan: 5,
-  fiyat_puan: 5,
-  konum_puan: 5,
+  isinma_puan: 5,
+  tesisat_puan: 5,
+  rutubet_puan: 5,
   ses_yalitimi_puan: 5,
+  ev_sahibi_tutum_puan: 5,
+  deposito_puan: 5,
+  kira_artis_puan: 5,
 };
 
 export function PropertyReviewForm({ propertyId }: { propertyId: number }) {
