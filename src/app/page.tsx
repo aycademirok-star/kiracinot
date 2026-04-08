@@ -82,7 +82,7 @@ export default function Home() {
 
     let rq = supabase
       .from("reviews")
-      .select("id, yazar_adi, yorum_metni, tarih, ev_durumu_puan, ev_sahibi_tutum_puan, isinma_puan, tesisat_puan, rutubet_puan, ses_yalitimi_puan, deposito_puan, kira_artis_puan, properties:ev_id(id, adres, il, ilce, mahalle)", { count: "exact" })
+      .select("id, yazar_adi, yorum_metni, tarih, ev_durumu_puan, ev_sahibi_tutum_puan, isinma_puan, tesisat_puan, rutubet_puan, ses_yalitimi_puan, deposito_puan, kira_artis_puan, ev_id, properties!ev_id(id, adres, il, ilce, mahalle)", { count: "exact" })
       .order("tarih", { ascending: false })
       .range(from, to);
 
