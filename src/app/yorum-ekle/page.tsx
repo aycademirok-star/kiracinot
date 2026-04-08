@@ -6,10 +6,13 @@ import { createClient } from "@/lib/supabase/client";
 
 const KATEGORILER = [
   { key: "ev_durumu_puan", label: "Ev Genel Durumu" },
-  { key: "ev_sahibi_puan", label: "Ev Sahibi" },
-  { key: "fiyat_puan", label: "Fiyat / Değer Oranı" },
-  { key: "konum_puan", label: "Konum / Ulaşım" },
+  { key: "isinma_puan", label: "Isınma Durumu" },
+  { key: "tesisat_puan", label: "Tesisat Durumu" },
+  { key: "rutubet_puan", label: "Rutubet Durumu" },
   { key: "ses_yalitimi_puan", label: "Ses Yalıtımı" },
+  { key: "ev_sahibi_puan", label: "Ev Sahibi Tutumu" },
+  { key: "deposito_puan", label: "Deposito İadesi" },
+  { key: "kira_artis_puan", label: "Kira Artışına Yaklaşım" },
 ];
 
 function YildizSecici({ value, onChange }: { value: number; onChange: (v: number) => void }) {
@@ -49,8 +52,9 @@ export default function YorumEklePage() {
   const [yazarAdi, setYazarAdi] = useState("");
   const [yorumMetni, setYorumMetni] = useState("");
   const [puanlar, setPuanlar] = useState({
-    ev_durumu_puan: 0, ev_sahibi_puan: 0, fiyat_puan: 0,
-    konum_puan: 0, ses_yalitimi_puan: 0,
+    ev_durumu_puan: 0, isinma_puan: 0, tesisat_puan: 0,
+    rutubet_puan: 0, ses_yalitimi_puan: 0,
+    ev_sahibi_puan: 0, deposito_puan: 0, kira_artis_puan: 0,
   });
   const [yukleniyor, setYukleniyor] = useState(false);
   const [hata, setHata] = useState("");
