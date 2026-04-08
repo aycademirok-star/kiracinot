@@ -17,12 +17,14 @@ type ReviewRow = {
   yorum_metni: string;
   tarih: string;
   ev_durumu_puan: number;
-  ev_sahibi_puan: number;
-  fiyat_puan: number;
-  konum_puan: number;
+  isinma_puan: number;
+  tesisat_puan: number;
+  rutubet_puan: number;
   ses_yalitimi_puan: number;
+  ev_sahibi_tutum_puan: number;
+  deposito_puan: number;
+  kira_artis_puan: number;
 };
-
 export async function generateMetadata({
   params,
 }: {
