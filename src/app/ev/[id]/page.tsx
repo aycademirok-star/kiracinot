@@ -99,7 +99,7 @@ export default async function PropertyPage({
   const { data: reviewsData } = await supabase
     .from("reviews")
     .select(
-      "id, yazar_adi, yorum_metni, tarih, ev_durumu_puan, ev_sahibi_puan, fiyat_puan, konum_puan, ses_yalitimi_puan",
+      "id, yazar_adi, yorum_metni, tarih, ev_durumu_puan, isinma_puan, tesisat_puan, rutubet_puan, ses_yalitimi_puan, ev_sahibi_tutum_puan, deposito_puan, kira_artis_puan",
     )
     .eq("ev_id", propertyId)
     .order("tarih", { ascending: false });
