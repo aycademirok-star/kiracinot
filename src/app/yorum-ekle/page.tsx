@@ -10,7 +10,7 @@ const KATEGORILER = [
   { key: "tesisat_puan", label: "Tesisat Durumu" },
   { key: "rutubet_puan", label: "Rutubet Durumu" },
   { key: "ses_yalitimi_puan", label: "Ses Yalıtımı" },
-  { key: "ev_sahibi_puan", label: "Ev Sahibi Tutumu" },
+  { key: "ev_sahibi_tutum_puan", label: "Ev Sahibi Tutumu" },
   { key: "deposito_puan", label: "Deposito İadesi" },
   { key: "kira_artis_puan", label: "Kira Artışına Yaklaşım" },
 ];
@@ -54,7 +54,7 @@ export default function YorumEklePage() {
   const [puanlar, setPuanlar] = useState({
     ev_durumu_puan: 0, isinma_puan: 0, tesisat_puan: 0,
     rutubet_puan: 0, ses_yalitimi_puan: 0,
-    ev_sahibi_puan: 0, deposito_puan: 0, kira_artis_puan: 0,
+    ev_sahibi_tutum_puan: 0, deposito_puan: 0, kira_artis_puan: 0,
   });
   const [yukleniyor, setYukleniyor] = useState(false);
   const [hata, setHata] = useState("");
