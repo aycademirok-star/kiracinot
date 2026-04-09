@@ -224,7 +224,7 @@ export default function Home() {
                   </div>
                   <p className="mt-1 text-sm text-zinc-500">
                     {review.properties
-                      ? review.properties.mahalle + ", " + review.properties.ilce + " / " + review.properties.il
+                      ? review.properties.adres + ", " + review.properties.mahalle + ", " + review.properties.ilce + " / " + review.properties.il
                       : "Adres bilgisi yok"}
                   </p>
                   <p className="mt-3 text-sm text-zinc-700">{review.yorum_metni}</p>
