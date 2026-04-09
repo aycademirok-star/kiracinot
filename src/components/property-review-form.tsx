@@ -11,14 +11,14 @@ import { useRouter } from "next/navigation";
 import { useState, useMemo } from "react";
 
 const initialScores: Record<CategoryKey, number> = {
-  ev_durumu_puan: 5,
-  isinma_puan: 5,
-  tesisat_puan: 5,
-  rutubet_puan: 5,
-  ses_yalitimi_puan: 5,
-  ev_sahibi_tutum_puan: 5,
-  deposito_puan: 5,
-  kira_artis_puan: 5,
+  ev_durumu_puan: 0,
+  isinma_puan: 0,
+  tesisat_puan: 0,
+  rutubet_puan: 0,
+  ses_yalitimi_puan: 0,
+  ev_sahibi_tutum_puan: 0,
+  deposito_puan: 0,
+  kira_artis_puan: 0,
 };
 
 export function PropertyReviewForm({ propertyId }: { propertyId: number }) {
