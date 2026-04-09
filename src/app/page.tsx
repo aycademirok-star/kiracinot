@@ -104,7 +104,7 @@ export default function Home() {
     setTotalReviews(count ?? 0);
     setReviews(((rd ?? []) as any[]).map((r) => ({
       ...r,
-      properties: r.properties?.[0] ?? null,
+      properties: Array.isArray(r.properties) ? r.properties?.[0] ?? null : r.properties ?? null,
       ortalamaPuan: ratingAverage(r),
     })));
 
