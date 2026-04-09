@@ -132,6 +132,7 @@ export default function YorumEklePage() {
       const adresParcalari = [];
       if (sokakAdi) adresParcalari.push(sokakAdi);
       if (apartmanNo) adresParcalari.push("No: " + apartmanNo);
+      if (daireNo) adresParcalari.push("D: " + daireNo);
       const adres = adresParcalari.length > 0 ? adresParcalari.join(" ") : mahalleAdi + " Mah.";
 
       const { data: existingProps } = await supabase
