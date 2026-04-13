@@ -156,6 +156,7 @@ export default function YorumEklePage() {
         yazar_adi: yazarAdi.trim(),
         yorum_metni: yorumMetni.trim(),
         tarih: new Date().toISOString(),
+        onaylandi: false,
         ...puanlar,
       });
       if (reviewError) throw reviewError;
