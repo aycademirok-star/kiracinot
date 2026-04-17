@@ -26,6 +26,7 @@ export default function Home() {
   const [mahalleAdi, setMahalleAdi] = useState("");
   const [sokakAdi, setSokakAdi] = useState("");
   const [apartman, setApartman] = useState("");
+  const [daireNo, setDaireNo] = useState("");
 
   const [sort, setSort] = useState<SortKey>("avg_desc");
   const [reviews, setReviews] = useState<any[]>([]);
@@ -82,14 +83,14 @@ export default function Home() {
 
     let rq = supabase
       .from("reviews")
-      .select("id, yazar_adi, yorum_metni, tarih, ev_durumu_puan, ev_sahibi_tutum_puan, isinma_puan, tesisat_puan, rutubet_puan, ses_yalitimi_puan, deposito_puan, kira_artis_puan, ev_id, properties!ev_id(id, adres, il, ilce, mahalle)", { count: "exact" })
+      .select("id, yazar_adi, yorum_metni, tarih, ev_durumu_puan, ev_sahibi_tutum_puan, isinma_puan, tesisat_puan, rutubet_puan, ses_yalitimi_puan, deposito_puan, kira_artis_puan, properties:ev_id(id, adres, il, ilce, mahalle)", { count: "exact" })
       .eq("onaylandi", true)
       .order("tarih", { ascending: false })
       .range(from, to);
 
     let pq = supabase
       .from("properties")
-      .select("id, adres, il, ilce, mahalle, reviews(ev_durumu_puan, ev_sahibi_puan, fiyat_puan, konum_puan, ses_yalitimi_puan)")
+      .select("id, adres, il, ilce, mahalle, reviews(ev_durumu_puan, ev_sahibi_tutum_puan, isinma_puan, tesisat_puan, rutubet_puan, ses_yalitimi_puan, deposito_puan, kira_artis_puan)")
       .limit(120);
 
     if (ilAdi) pq = pq.eq("il", ilAdi);
@@ -127,159 +128,226 @@ export default function Home() {
 
   const totalPages = Math.max(1, Math.ceil(totalReviews / REVIEWS_PAGE_SIZE));
 
+  const selectClass = "h-11 w-full rounded-lg border border-white/30 bg-white/20 backdrop-blur-sm px-3 text-sm text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-white/50 transition disabled:opacity-50";
+  const inputClass = "h-11 w-full rounded-lg border border-white/30 bg-white/20 backdrop-blur-sm px-4 text-sm text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-white/50 transition";
+
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8">
-      <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-900">Kiracı Yorum</h1>
-        <p className="mt-2 text-zinc-600">İl, ilçe, mahalle ve sokak seçerek ara.</p>
+    <main className="min-h-screen bg-gray-50">
 
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <div>
-            <label className="mb-1 block text-sm text-zinc-600">İl</label>
-            <select value={ilId ?? ""} onFocus={illeriYukle} onClick={illeriYukle}
-              onChange={(e) => {
-                const id = Number(e.target.value);
-                const adi = iller.find((i: any) => i._id === id)?.city ?? "";
-                ilSecildi(id, adi);
-              }}
-              className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2">
-              <option value="">Seçiniz</option>
-              {iller.map((i: any) => <option key={i._id} value={i._id}>{i.city}</option>)}
-            </select>
+      {/* NAVBAR */}
+      <nav className="bg-blue-700 text-white shadow-lg">
+        <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6 lg:px-8 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center text-lg">🏠</div>
+            <div>
+              <span className="font-bold text-lg tracking-tight">Kiracı Yorum</span>
+              <p className="text-xs text-blue-200 leading-none">Kiracıların sesi</p>
+            </div>
           </div>
-
-          <div>
-            <label className="mb-1 block text-sm text-zinc-600">İlçe</label>
-            <select value={ilceId ?? ""} disabled={!ilId}
-              onChange={(e) => {
-                const id = Number(e.target.value);
-                const adi = ilceler.find((i: any) => i._id === id)?.name ?? "";
-                ilceSecildi(id, adi);
-              }}
-              className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2 disabled:opacity-50">
-              <option value="">Seçiniz</option>
-              {ilceler.map((i: any) => <option key={i._id} value={i._id}>{i.name}</option>)}
-            </select>
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium">
+            <a href="#yorumlar" className="text-blue-100 hover:text-white transition">Son Yorumlar</a>
+            <a href="#puanlar" className="text-blue-100 hover:text-white transition">Puanlamaya Göre</a>
           </div>
-
-          <div>
-            <label className="mb-1 block text-sm text-zinc-600">Mahalle</label>
-            <select value={mahalleAdi} disabled={!ilceId}
-              onChange={(e) => setMahalleAdi(e.target.value)}
-              className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2 disabled:opacity-50">
-              <option value="">Seçiniz</option>
-              {mahalleler.map((m: any) => <option key={m._id} value={m.name}>{m.name}</option>)}
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm text-zinc-600">Sokak</label>
-            <input value={sokakAdi} onChange={(e) => setSokakAdi(e.target.value)}
-              placeholder="Sokak adı"
-              className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm text-zinc-600">Apartman No</label>
-            <input value={apartman} onChange={(e) => setApartman(e.target.value)}
-              placeholder="Örn: 12"
-              className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm text-zinc-600">Daire No</label>
-            <input value={apartman} onChange={(e) => setApartman(e.target.value)}
-              placeholder="Örn: 5"
-              className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
-          </div>
-        </div>
-
-        <div className="mt-4 flex gap-3">
-          <button onClick={() => fetchData(true)} disabled={loading}
-            className="h-11 rounded-xl bg-zinc-900 px-6 font-medium text-white hover:bg-zinc-700 disabled:opacity-50">
-            {loading ? "Aranıyor..." : "Yorum Ara"}
-          </button>
           <Link href="/yorum-ekle"
-            className="h-11 rounded-xl border border-zinc-300 px-6 font-medium text-zinc-900 hover:bg-zinc-50 flex items-center">
-            Yorum Bırak
+            className="rounded-lg bg-white text-blue-700 px-4 py-2 text-sm font-bold hover:bg-blue-50 transition shadow">
+            + Yorum Bırak
           </Link>
         </div>
+      </nav>
+
+      {/* HERO */}
+      <section className="relative h-[480px] overflow-hidden">
+        <img
+          src="/hero.jpg"
+          alt="Kiracı Yorum Hero"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-blue-900/65" />
+        <div className="relative h-full flex flex-col items-start justify-center px-6 sm:px-12 lg:px-24 max-w-6xl mx-auto">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight drop-shadow-lg">
+            Taşınmadan Önce <br />
+            <span className="text-blue-300">Oku!</span>
+          </h1>
+          <p className="mt-4 text-blue-100 text-lg max-w-xl leading-relaxed">
+            Gerçek kiracıların yorumlarını oku, ev sahibini ve yaşam koşullarını öğren.
+            Güvenli bir yuva için doğru kararı ver.
+          </p>
+          <Link href="/yorum-ekle"
+            className="mt-6 rounded-xl bg-blue-500 hover:bg-blue-400 text-white px-8 py-3.5 font-bold text-lg shadow-xl transition">
+            Deneyimini Paylaş →
+          </Link>
+        </div>
+
+        {/* ARAMA ÇUBUĞU - hero üstünde */}
+        <div className="absolute bottom-0 left-0 right-0 bg-blue-800/90 backdrop-blur-sm py-4 px-6 sm:px-12 lg:px-24">
+          <div className="mx-auto max-w-6xl">
+            <p className="text-blue-200 text-xs font-semibold uppercase tracking-widest mb-3">Adrese Göre Yorum Ara</p>
+            <div className="flex flex-wrap gap-3 items-end">
+              <select value={ilId ?? ""} onFocus={illeriYukle} onClick={illeriYukle}
+                onChange={(e) => {
+                  const id = Number(e.target.value);
+                  const adi = iller.find((i: any) => i._id === id)?.city ?? "";
+                  ilSecildi(id, adi);
+                }}
+                className={selectClass} style={{minWidth:"140px",flex:"1"}}>
+                <option value="" className="text-gray-800">İl seçiniz</option>
+                {iller.map((i: any) => <option key={i._id} value={i._id} className="text-gray-800">{i.city}</option>)}
+              </select>
+
+              <select value={ilceId ?? ""} disabled={!ilId}
+                onChange={(e) => {
+                  const id = Number(e.target.value);
+                  const adi = ilceler.find((i: any) => i._id === id)?.name ?? "";
+                  ilceSecildi(id, adi);
+                }}
+                className={selectClass} style={{minWidth:"140px",flex:"1"}}>
+                <option value="" className="text-gray-800">İlçe seçiniz</option>
+                {ilceler.map((i: any) => <option key={i._id} value={i._id} className="text-gray-800">{i.name}</option>)}
+              </select>
+
+              <select value={mahalleAdi} disabled={!ilceId}
+                onChange={(e) => setMahalleAdi(e.target.value)}
+                className={selectClass} style={{minWidth:"140px",flex:"1"}}>
+                <option value="" className="text-gray-800">Mahalle seçiniz</option>
+                {mahalleler.map((m: any) => <option key={m._id} value={m.name} className="text-gray-800">{m.name}</option>)}
+              </select>
+
+              <input value={sokakAdi} onChange={(e) => setSokakAdi(e.target.value)}
+                placeholder="Sokak" className={inputClass} style={{minWidth:"120px",flex:"1"}} />
+
+              <button onClick={() => fetchData(true)} disabled={loading}
+                className="h-11 rounded-lg bg-blue-500 hover:bg-blue-400 text-white px-6 font-bold text-sm transition shadow disabled:opacity-50 whitespace-nowrap">
+                {loading ? "Aranıyor..." : "🔍 Ara"}
+              </button>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className="grid gap-8 lg:grid-cols-2">
-        <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <h2 className="text-xl font-semibold text-zinc-900">Son Eklenen Yorumlar</h2>
-          <p className="mt-1 text-sm text-zinc-500">Sayfa {page} / {totalPages} · Toplam {totalReviews} eşleşen yorum</p>
-          <div className="mt-4 space-y-4">
-            {reviews.length === 0 && (
-              <p className="rounded-lg bg-zinc-50 p-4 text-sm text-zinc-600">Bu arama için yorum bulunamadı.</p>
-            )}
-            {reviews.map((review) => {
-              const inner = (
-                <>
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="font-semibold text-zinc-900">{review.yazar_adi}</p>
-                    <span className="rounded-full bg-blue-50 px-2 py-1 text-sm font-medium text-blue-700">
-                      {review.ortalamaPuan.toFixed(1)} / 5
-                    </span>
+      {/* İÇERİK */}
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8 flex flex-col gap-8">
+
+        {/* İSTATİSTİKLER */}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {[
+            { label: "Toplam Yorum", value: totalReviews, icon: "💬" },
+            { label: "Değerlendirilen Ev", value: properties.length, icon: "🏘️" },
+            { label: "Aktif İl", value: "81", icon: "📍" },
+            { label: "Ücretsiz", value: "Her Zaman", icon: "✨" },
+          ].map((stat) => (
+            <div key={stat.label} className="rounded-2xl bg-white border border-gray-100 shadow-sm p-4 text-center">
+              <div className="text-2xl mb-1">{stat.icon}</div>
+              <div className="text-xl font-bold text-blue-900">{stat.value}</div>
+              <div className="text-xs text-gray-400 mt-0.5">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* YORUMLAR VE PUANLAR */}
+        <section className="grid gap-6 lg:grid-cols-2">
+
+          {/* Son Yorumlar */}
+          <div id="yorumlar" className="rounded-2xl bg-white border border-gray-100 shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">💬 Son Eklenen Yorumlar</h2>
+                <p className="text-xs text-gray-400">Sayfa {page}/{totalPages} · {totalReviews} yorum</p>
+              </div>
+              <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)}
+                className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 outline-none">
+                {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
+            </div>
+
+            <div className="space-y-3">
+              {reviews.length === 0 && (
+                <div className="rounded-xl bg-gray-50 p-6 text-center">
+                  <p className="text-gray-400 text-sm">Bu arama için yorum bulunamadı.</p>
+                </div>
+              )}
+              {reviews.map((review) => {
+                const inner = (
+                  <div className="rounded-xl border border-gray-100 p-4 hover:border-blue-200 hover:bg-blue-50/30 transition-all cursor-pointer">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm">
+                          {review.yazar_adi?.[0]?.toUpperCase()}
+                        </div>
+                        <p className="font-semibold text-gray-900 text-sm">{review.yazar_adi}</p>
+                      </div>
+                      <span className="rounded-full bg-blue-600 px-2.5 py-1 text-xs font-bold text-white">
+                        {review.ortalamaPuan.toFixed(1)} ★
+                      </span>
+                    </div>
+                    <p className="mt-2 text-xs text-gray-400">
+                      📍 {review.properties
+                        ? review.properties.adres + ", " + review.properties.mahalle + ", " + review.properties.ilce + " / " + review.properties.il
+                        : "Adres bilgisi yok"}
+                    </p>
+                    <p className="mt-2 text-sm text-gray-700 line-clamp-2">{review.yorum_metni}</p>
+                    <p className="mt-2 text-xs text-gray-300">{formatDate(review.tarih)}</p>
                   </div>
-                  <p className="mt-1 text-sm text-zinc-500">
-                    {review.properties
-                      ? review.properties.adres + ", " + review.properties.mahalle + ", " + review.properties.ilce + " / " + review.properties.il
-                      : "Adres bilgisi yok"}
-                  </p>
-                  <p className="mt-3 text-sm text-zinc-700">{review.yorum_metni}</p>
-                  <p className="mt-2 text-xs text-zinc-500">{formatDate(review.tarih)}</p>
-                </>
-              );
-              if (review.properties) {
-                return (
-                  <Link key={review.id} href={"/ev/" + review.properties.id}
-                    className="block rounded-xl border p-4 transition hover:border-zinc-400 hover:bg-zinc-50">
-                    {inner}
-                  </Link>
                 );
-              }
-              return <article key={review.id} className="rounded-xl border p-4">{inner}</article>;
-            })}
-          </div>
-          {totalPages > 1 && (
-            <nav className="mt-6 flex flex-wrap items-center justify-center gap-2">
-              {page > 1 && (
-                <button onClick={() => setPage(page - 1)}
-                  className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-50">Önceki</button>
-              )}
-              {page < totalPages && (
-                <button onClick={() => setPage(page + 1)}
-                  className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-50">Sonraki</button>
-              )}
-            </nav>
-          )}
-        </div>
+                if (review.properties) {
+                  return <Link key={review.id} href={"/ev/" + review.properties.id}>{inner}</Link>;
+                }
+                return <div key={review.id}>{inner}</div>;
+              })}
+            </div>
 
-        <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <h2 className="text-xl font-semibold text-zinc-900">Ortalama Puanlar</h2>
-          <p className="mt-1 text-sm text-zinc-500">Sıralama: {SORT_OPTIONS.find((o) => o.value === sort)?.label ?? "—"}</p>
-          <div className="mt-4 space-y-3">
-            {properties.length === 0 && (
-              <p className="rounded-lg bg-zinc-50 p-4 text-sm text-zinc-600">Bu arama için puanlanmış ev bulunamadı.</p>
+            {totalPages > 1 && (
+              <nav className="mt-4 flex justify-center gap-2">
+                {page > 1 && (
+                  <button onClick={() => setPage(page - 1)}
+                    className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition">
+                    ← Önceki
+                  </button>
+                )}
+                {page < totalPages && (
+                  <button onClick={() => setPage(page + 1)}
+                    className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition">
+                    Sonraki →
+                  </button>
+                )}
+              </nav>
             )}
-            {properties.map((property) => (
-              <Link key={property.id} href={"/ev/" + property.id}
-                className="flex items-start justify-between gap-4 rounded-xl border p-4 transition hover:border-zinc-400 hover:bg-zinc-50">
-                <div className="min-w-0">
-                  <p className="font-medium text-zinc-900">{property.adres}</p>
-                  <p className="text-sm text-zinc-600">{property.mahalle}, {property.ilce} / {property.il}</p>
-                </div>
-                <div className="shrink-0 text-right">
-                  <p className="text-lg font-semibold text-zinc-900">{property.ortalamaPuan.toFixed(1)}</p>
-                  <p className="text-xs text-zinc-500">{property.reviewCount} yorum</p>
-                </div>
-              </Link>
-            ))}
           </div>
-        </div>
-      </section>
+
+          {/* Ortalama Puanlar */}
+          <div id="puanlar" className="rounded-2xl bg-white border border-gray-100 shadow-sm p-6">
+            <div className="mb-4">
+              <h2 className="text-lg font-bold text-gray-900">🏆 Ortalama Puanlar</h2>
+              <p className="text-xs text-gray-400">{SORT_OPTIONS.find((o) => o.value === sort)?.label}</p>
+            </div>
+            <div className="space-y-3">
+              {properties.length === 0 && (
+                <div className="rounded-xl bg-gray-50 p-6 text-center">
+                  <p className="text-gray-400 text-sm">Bu arama için puanlanmış ev bulunamadı.</p>
+                </div>
+              )}
+              {properties.map((property) => (
+                <Link key={property.id} href={"/ev/" + property.id}
+                  className="flex items-center justify-between gap-4 rounded-xl border border-gray-100 p-4 hover:border-blue-200 hover:bg-blue-50/30 transition-all">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-gray-900 text-sm truncate">{property.adres}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">📍 {property.mahalle}, {property.ilce} / {property.il}</p>
+                    <p className="text-xs text-gray-300 mt-0.5">{property.reviewCount} yorum</p>
+                  </div>
+                  <div className="shrink-0">
+                    <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center shadow">
+                      <span className="text-white font-bold text-sm">{property.ortalamaPuan.toFixed(1)}</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <footer className="text-center py-4 text-xs text-gray-300 border-t border-gray-100">
+          Kiracı Yorum © 2026 · Tüm yorumlar gerçek kiracılara aittir
+        </footer>
+      </div>
     </main>
   );
 }
