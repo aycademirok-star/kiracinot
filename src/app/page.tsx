@@ -215,6 +215,12 @@ export default function Home() {
               <input value={sokakAdi} onChange={(e) => setSokakAdi(e.target.value)}
                 placeholder="Sokak" className={inputClass} style={{minWidth:"120px",flex:"1"}} />
 
+              <input value={apartman} onChange={(e) => setApartman(e.target.value)}
+                placeholder="Apt No" className={inputClass} style={{minWidth:"90px",flex:"0.7"}} />
+
+              <input value={daireNo} onChange={(e) => setDaireNo(e.target.value)}
+                placeholder="Daire No" className={inputClass} style={{minWidth:"90px",flex:"0.7"}} />
+
               <button onClick={() => fetchData(true)} disabled={loading}
                 className="h-11 rounded-lg bg-blue-500 hover:bg-blue-400 text-white px-6 font-bold text-sm transition shadow disabled:opacity-50 whitespace-nowrap">
                 {loading ? "Aranıyor..." : "🔍 Ara"}
