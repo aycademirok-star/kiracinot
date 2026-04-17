@@ -163,7 +163,7 @@ export default function Home() {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-blue-900/65" />
-        <div className="relative h-full flex flex-col items-start justify-center px-6 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
+        <div className="relative h-full flex flex-col items-start justify-center px-6 sm:px-4 lg:px-6 max-w-6xl mx-auto w-full">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight drop-shadow-lg">
             Taşınmadan Önce <br />
             <span className="text-blue-300">Oku!</span>
@@ -179,7 +179,7 @@ export default function Home() {
         </div>
 
         {/* ARAMA ÇUBUĞU - hero üstünde */}
-        <div className="absolute bottom-0 left-0 right-0 bg-blue-800/90 backdrop-blur-sm py-4 px-6 sm:px-6 lg:px-8">
+        <div className="absolute bottom-0 left-0 right-0 bg-blue-800/90 backdrop-blur-sm py-4 px-6 sm:px-4 lg:px-6">
           <div className="mx-auto max-w-6xl">
             <p className="text-blue-200 text-xs font-semibold uppercase tracking-widest mb-3">Adrese Göre Yorum Ara</p>
             <div className="flex flex-wrap gap-3 items-end">
