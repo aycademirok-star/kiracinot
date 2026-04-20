@@ -157,7 +157,7 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <section className="relative h-[520px] overflow-hidden">
+      <section className="relative h-[580px] overflow-hidden">
         <img src="/hero.jpg" alt="Kiracı Yorum" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0" style={{backgroundColor:"rgba(255,200,150,0.35)"}} />
 
