@@ -172,8 +172,9 @@ export default function Home() {
           </p>
           <Link href="/yorum-ekle"
             className="mt-6 rounded-xl text-white font-bold text-base shadow-xl transition"
-style={{backgroundColor:"#e85d04", display:"inline-block", padding:"12px 32px", width:"fit-content"}}
-            
+style={{backgroundColor:"#e85d04", display:"inline-block", padding:"12px 32px", width:"fit-content"}}>
+            Deneyimini Paylaş →
+          </Link>            
             Deneyimini Paylaş →
           </Link>
         </div>
