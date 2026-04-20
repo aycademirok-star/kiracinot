@@ -161,7 +161,7 @@ export default function Home() {
         <img src="/hero.jpg" alt="Kiracı Yorum" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0" style={{backgroundColor:"rgba(255,200,150,0.35)"}} />
 
-        <div className="relative h-full flex flex-col justify-end pb-36 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
+        <div className="relative h-full flex flex-col justify-center pb-28 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight drop-shadow-lg">
             Taşınmadan Önce <br />
             <span style={{color:"#ffd4b8"}}>Oku!</span>
@@ -171,7 +171,7 @@ export default function Home() {
             Güvenli bir yuva için doğru kararı ver.
           </p>
           <Link href="/yorum-ekle"
-            className="mt-6 inline-block rounded-xl text-white px-8 py-3 font-bold text-base shadow-xl transition"
+            className="mt-6 inline-block rounded-xl text-white px-8 py-3 font-bold text-base shadow-xl transition w-auto"
             style={{backgroundColor:"#e85d04"}}>
             Deneyimini Paylaş →
           </Link>
