@@ -135,7 +135,7 @@ export default function Home() {
     <main className="min-h-screen" style={{backgroundColor:"#fdf8f3"}}>
 
       {/* NAVBAR */}
-      <nav style={{backgroundColor:"#c2440e"}} className="text-white shadow-lg">
+      <nav style={{backgroundColor:"#f97316"}} className="text-white shadow-lg">
         <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg flex items-center justify-center text-lg" style={{backgroundColor:"rgba(255,255,255,0.2)"}}>🏠</div>
@@ -159,7 +159,7 @@ export default function Home() {
       {/* HERO */}
       <section className="relative h-[520px] overflow-hidden">
         <img src="/hero.jpg" alt="Kiracı Yorum" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0" style={{backgroundColor:"rgba(150,50,0,0.65)"}} />
+        <div className="absolute inset-0" style={{backgroundColor:"rgba(255,200,150,0.35)"}} />
 
         <div className="relative h-full flex flex-col justify-center pb-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight drop-shadow-lg">
@@ -171,14 +171,14 @@ export default function Home() {
             Güvenli bir yuva için doğru kararı ver.
           </p>
           <Link href="/yorum-ekle"
-            className="mt-6 inline-block rounded-xl text-white px-8 py-3.5 font-bold text-lg shadow-xl transition"
+            className="mt-6 inline-block rounded-xl text-white px-8 py-3 font-bold text-base shadow-xl transition"
             style={{backgroundColor:"#e85d04"}}>
             Deneyimini Paylaş →
           </Link>
         </div>
 
         {/* ARAMA ÇUBUĞU */}
-        <div className="absolute bottom-0 left-0 right-0 py-4 px-4 sm:px-6 lg:px-8" style={{backgroundColor:"rgba(120,40,0,0.88)"}}>
+        <div className="absolute bottom-0 left-0 right-0 py-4 px-4 sm:px-6 lg:px-8" style={{backgroundColor:"rgba(249,115,22,0.92)"}}>
           <div className="mx-auto max-w-6xl">
             <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{color:"#ffd4b8"}}>Adrese Göre Yorum Ara</p>
             <div className="flex flex-wrap gap-3 items-end">
