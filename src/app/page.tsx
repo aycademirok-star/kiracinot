@@ -132,24 +132,25 @@ export default function Home() {
   const inputClass = "h-11 w-full rounded-lg border border-white/30 bg-white/20 backdrop-blur-sm px-4 text-sm text-white placeholder-white/70 outline-none focus:ring-2 focus:ring-white/50 transition";
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen" style={{backgroundColor:"#fdf8f3"}}>
 
       {/* NAVBAR */}
-      <nav className="bg-blue-700 text-white shadow-lg">
+      <nav style={{backgroundColor:"#c2440e"}} className="text-white shadow-lg">
         <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center text-lg">🏠</div>
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-lg" style={{backgroundColor:"rgba(255,255,255,0.2)"}}>🏠</div>
             <div>
               <span className="font-bold text-lg tracking-tight">Kiracı Yorum</span>
-              <p className="text-xs text-blue-200 leading-none">Kiracıların sesi</p>
+              <p className="text-xs leading-none" style={{color:"#ffd4b8"}}>Kiracıların sesi</p>
             </div>
           </div>
           <div className="hidden md:flex items-center gap-6 text-sm font-medium">
-            <a href="#yorumlar" className="text-blue-100 hover:text-white transition">Son Yorumlar</a>
-            <a href="#puanlar" className="text-blue-100 hover:text-white transition">Puanlamaya Göre</a>
+            <a href="#yorumlar" className="hover:text-white transition" style={{color:"#ffd4b8"}}>Son Yorumlar</a>
+            <a href="#puanlar" className="hover:text-white transition" style={{color:"#ffd4b8"}}>Puanlamaya Göre</a>
           </div>
           <Link href="/yorum-ekle"
-            className="rounded-lg bg-white text-blue-700 px-4 py-2 text-sm font-bold hover:bg-blue-50 transition shadow">
+            className="rounded-lg px-4 py-2 text-sm font-bold transition shadow"
+            style={{backgroundColor:"white", color:"#c2440e"}}>
             + Yorum Bırak
           </Link>
         </div>
@@ -157,31 +158,29 @@ export default function Home() {
 
       {/* HERO */}
       <section className="relative h-[520px] overflow-hidden">
-        <img
-          src="/hero.jpg"
-          alt="Kiracı Yorum Hero"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-blue-900/65" />
-       <div className="relative h-full flex flex-col items-start justify-center px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full pb-24">
+        <img src="/hero.jpg" alt="Kiracı Yorum" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0" style={{backgroundColor:"rgba(150,50,0,0.65)"}} />
+
+        <div className="relative h-full flex flex-col justify-center pb-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight drop-shadow-lg">
             Taşınmadan Önce <br />
-            <span className="text-blue-300">Oku!</span>
+            <span style={{color:"#ffd4b8"}}>Oku!</span>
           </h1>
-          <p className="mt-4 text-blue-100 text-lg max-w-xl leading-relaxed">
+          <p className="mt-4 text-lg max-w-xl leading-relaxed" style={{color:"#ffe8d6"}}>
             Gerçek kiracıların yorumlarını oku, ev sahibini ve yaşam koşullarını öğren.
             Güvenli bir yuva için doğru kararı ver.
           </p>
           <Link href="/yorum-ekle"
-            className="mt-6 rounded-xl bg-blue-500 hover:bg-blue-400 text-white px-8 py-3.5 font-bold text-lg shadow-xl transition">
+            className="mt-6 inline-block rounded-xl text-white px-8 py-3.5 font-bold text-lg shadow-xl transition"
+            style={{backgroundColor:"#e85d04"}}>
             Deneyimini Paylaş →
           </Link>
         </div>
 
-        {/* ARAMA ÇUBUĞU - hero üstünde */}
-      <div className="absolute bottom-0 left-0 right-0 bg-blue-800/90 backdrop-blur-sm py-4 px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-6xl px-0">
-            <p className="text-blue-200 text-xs font-semibold uppercase tracking-widest mb-3">Adrese Göre Yorum Ara</p>
+        {/* ARAMA ÇUBUĞU */}
+        <div className="absolute bottom-0 left-0 right-0 py-4 px-4 sm:px-6 lg:px-8" style={{backgroundColor:"rgba(120,40,0,0.88)"}}>
+          <div className="mx-auto max-w-6xl">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{color:"#ffd4b8"}}>Adrese Göre Yorum Ara</p>
             <div className="flex flex-wrap gap-3 items-end">
               <select value={ilId ?? ""} onFocus={illeriYukle} onClick={illeriYukle}
                 onChange={(e) => {
@@ -189,7 +188,7 @@ export default function Home() {
                   const adi = iller.find((i: any) => i._id === id)?.city ?? "";
                   ilSecildi(id, adi);
                 }}
-                className={selectClass} style={{minWidth:"140px",flex:"1"}}>
+                className={selectClass} style={{minWidth:"130px", flex:"1"}}>
                 <option value="" className="text-gray-800">İl seçiniz</option>
                 {iller.map((i: any) => <option key={i._id} value={i._id} className="text-gray-800">{i.city}</option>)}
               </select>
@@ -200,29 +199,30 @@ export default function Home() {
                   const adi = ilceler.find((i: any) => i._id === id)?.name ?? "";
                   ilceSecildi(id, adi);
                 }}
-                className={selectClass} style={{minWidth:"140px",flex:"1"}}>
+                className={selectClass} style={{minWidth:"130px", flex:"1"}}>
                 <option value="" className="text-gray-800">İlçe seçiniz</option>
                 {ilceler.map((i: any) => <option key={i._id} value={i._id} className="text-gray-800">{i.name}</option>)}
               </select>
 
               <select value={mahalleAdi} disabled={!ilceId}
                 onChange={(e) => setMahalleAdi(e.target.value)}
-                className={selectClass} style={{minWidth:"140px",flex:"1"}}>
+                className={selectClass} style={{minWidth:"130px", flex:"1"}}>
                 <option value="" className="text-gray-800">Mahalle seçiniz</option>
                 {mahalleler.map((m: any) => <option key={m._id} value={m.name} className="text-gray-800">{m.name}</option>)}
               </select>
 
               <input value={sokakAdi} onChange={(e) => setSokakAdi(e.target.value)}
-                placeholder="Sokak" className={inputClass} style={{minWidth:"120px",flex:"1"}} />
+                placeholder="Sokak" className={inputClass} style={{minWidth:"100px", flex:"0.8"}} />
 
               <input value={apartman} onChange={(e) => setApartman(e.target.value)}
-                placeholder="Apt No" className={inputClass} style={{minWidth:"90px",flex:"0.7"}} />
+                placeholder="Apt No" className={inputClass} style={{minWidth:"80px", flex:"0.6"}} />
 
               <input value={daireNo} onChange={(e) => setDaireNo(e.target.value)}
-                placeholder="Daire No" className={inputClass} style={{minWidth:"90px",flex:"0.7"}} />
+                placeholder="Daire No" className={inputClass} style={{minWidth:"80px", flex:"0.6"}} />
 
               <button onClick={() => fetchData(true)} disabled={loading}
-                className="h-11 rounded-lg bg-blue-500 hover:bg-blue-400 text-white px-6 font-bold text-sm transition shadow disabled:opacity-50 whitespace-nowrap">
+                className="h-11 rounded-lg text-white px-6 font-bold text-sm transition shadow disabled:opacity-50 whitespace-nowrap"
+                style={{backgroundColor:"#e85d04"}}>
                 {loading ? "Aranıyor..." : "🔍 Ara"}
               </button>
             </div>
@@ -241,9 +241,9 @@ export default function Home() {
             { label: "Aktif İl", value: "81", icon: "📍" },
             { label: "Ücretsiz", value: "Her Zaman", icon: "✨" },
           ].map((stat) => (
-            <div key={stat.label} className="rounded-2xl bg-white border border-gray-100 shadow-sm p-4 text-center">
+            <div key={stat.label} className="rounded-2xl bg-white border shadow-sm p-4 text-center" style={{borderColor:"#fde8d8"}}>
               <div className="text-2xl mb-1">{stat.icon}</div>
-              <div className="text-xl font-bold text-blue-900">{stat.value}</div>
+              <div className="text-xl font-bold" style={{color:"#c2440e"}}>{stat.value}</div>
               <div className="text-xs text-gray-400 mt-0.5">{stat.label}</div>
             </div>
           ))}
@@ -252,8 +252,7 @@ export default function Home() {
         {/* YORUMLAR VE PUANLAR */}
         <section className="grid gap-6 lg:grid-cols-2">
 
-          {/* Son Yorumlar */}
-          <div id="yorumlar" className="rounded-2xl bg-white border border-gray-100 shadow-sm p-6">
+          <div id="yorumlar" className="rounded-2xl bg-white border shadow-sm p-6" style={{borderColor:"#fde8d8"}}>
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h2 className="text-lg font-bold text-gray-900">💬 Son Eklenen Yorumlar</h2>
@@ -264,24 +263,23 @@ export default function Home() {
                 {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             </div>
-
             <div className="space-y-3">
               {reviews.length === 0 && (
-                <div className="rounded-xl bg-gray-50 p-6 text-center">
+                <div className="rounded-xl p-6 text-center" style={{backgroundColor:"#fdf8f3"}}>
                   <p className="text-gray-400 text-sm">Bu arama için yorum bulunamadı.</p>
                 </div>
               )}
               {reviews.map((review) => {
                 const inner = (
-                  <div className="rounded-xl border border-gray-100 p-4 hover:border-blue-200 hover:bg-blue-50/30 transition-all cursor-pointer">
+                  <div className="rounded-xl border p-4 transition-all cursor-pointer hover:shadow-md" style={{borderColor:"#fde8d8", backgroundColor:"#fffaf7"}}>
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white" style={{backgroundColor:"#e85d04"}}>
                           {review.yazar_adi?.[0]?.toUpperCase()}
                         </div>
                         <p className="font-semibold text-gray-900 text-sm">{review.yazar_adi}</p>
                       </div>
-                      <span className="rounded-full bg-blue-600 px-2.5 py-1 text-xs font-bold text-white">
+                      <span className="rounded-full px-2.5 py-1 text-xs font-bold text-white" style={{backgroundColor:"#e85d04"}}>
                         {review.ortalamaPuan.toFixed(1)} ★
                       </span>
                     </div>
@@ -300,18 +298,17 @@ export default function Home() {
                 return <div key={review.id}>{inner}</div>;
               })}
             </div>
-
             {totalPages > 1 && (
               <nav className="mt-4 flex justify-center gap-2">
                 {page > 1 && (
                   <button onClick={() => setPage(page - 1)}
-                    className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition">
+                    className="rounded-lg border px-4 py-2 text-sm font-medium transition" style={{borderColor:"#fde8d8", color:"#c2440e"}}>
                     ← Önceki
                   </button>
                 )}
                 {page < totalPages && (
                   <button onClick={() => setPage(page + 1)}
-                    className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition">
+                    className="rounded-lg border px-4 py-2 text-sm font-medium transition" style={{borderColor:"#fde8d8", color:"#c2440e"}}>
                     Sonraki →
                   </button>
                 )}
@@ -319,28 +316,28 @@ export default function Home() {
             )}
           </div>
 
-          {/* Ortalama Puanlar */}
-          <div id="puanlar" className="rounded-2xl bg-white border border-gray-100 shadow-sm p-6">
+          <div id="puanlar" className="rounded-2xl bg-white border shadow-sm p-6" style={{borderColor:"#fde8d8"}}>
             <div className="mb-4">
               <h2 className="text-lg font-bold text-gray-900">🏆 Ortalama Puanlar</h2>
               <p className="text-xs text-gray-400">{SORT_OPTIONS.find((o) => o.value === sort)?.label}</p>
             </div>
             <div className="space-y-3">
               {properties.length === 0 && (
-                <div className="rounded-xl bg-gray-50 p-6 text-center">
+                <div className="rounded-xl p-6 text-center" style={{backgroundColor:"#fdf8f3"}}>
                   <p className="text-gray-400 text-sm">Bu arama için puanlanmış ev bulunamadı.</p>
                 </div>
               )}
               {properties.map((property) => (
                 <Link key={property.id} href={"/ev/" + property.id}
-                  className="flex items-center justify-between gap-4 rounded-xl border border-gray-100 p-4 hover:border-blue-200 hover:bg-blue-50/30 transition-all">
+                  className="flex items-center justify-between gap-4 rounded-xl border p-4 transition-all hover:shadow-md"
+                  style={{borderColor:"#fde8d8", backgroundColor:"#fffaf7"}}>
                   <div className="min-w-0">
                     <p className="font-semibold text-gray-900 text-sm truncate">{property.adres}</p>
                     <p className="text-xs text-gray-400 mt-0.5">📍 {property.mahalle}, {property.ilce} / {property.il}</p>
                     <p className="text-xs text-gray-300 mt-0.5">{property.reviewCount} yorum</p>
                   </div>
                   <div className="shrink-0">
-                    <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center shadow">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow" style={{backgroundColor:"#e85d04"}}>
                       <span className="text-white font-bold text-sm">{property.ortalamaPuan.toFixed(1)}</span>
                     </div>
                   </div>
@@ -350,7 +347,7 @@ export default function Home() {
           </div>
         </section>
 
-        <footer className="text-center py-4 text-xs text-gray-300 border-t border-gray-100">
+        <footer className="text-center py-4 text-xs text-gray-300 border-t" style={{borderColor:"#fde8d8"}}>
           Kiracı Yorum © 2026 · Tüm yorumlar gerçek kiracılara aittir
         </footer>
       </div>
