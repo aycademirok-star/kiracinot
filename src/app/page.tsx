@@ -171,7 +171,8 @@ export default function Home() {
             Güvenli bir yuva için doğru kararı ver.
           </p>
           <Link href="/yorum-ekle"
-            className="mt-6 inline-block rounded-xl text-white px-8 py-3 font-bold text-base shadow-xl transition w-auto"
+            className="mt-6 rounded-xl text-white font-bold text-base shadow-xl transition"
+style={{backgroundColor:"#e85d04", display:"inline-block", padding:"12px 32px", width:"fit-content"}}
             style={{backgroundColor:"#e85d04"}}>
             Deneyimini Paylaş →
           </Link>
