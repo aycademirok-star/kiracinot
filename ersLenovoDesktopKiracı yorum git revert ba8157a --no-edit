@@ -1,0 +1,53 @@
+[33mba8157a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m buton genisligi mobil duzeltildi
+[33m4d7b896[m duplicate link duzeltildi
+[33mfe38f37[m buton syntax hatasi duzeltildi
+[33m452d637[m duplicate style duzeltildi
+[33m3108722[m buton genisligi duzeltildi
+[33mae92701[m hero yazilari yukarı tasindi buton kucultuldu
+[33m5a7a95b[m hero yazilari asagi tasindi
+[33m3f69ebe[m mobil goruntum duzeltildi
+[33mcae78f0[m renkler yumusatildi
+[33meb47da3[m turuncu krem tema
+[33mc3dbd51[m hero dikey ortalama duzeltildi
+[33mb6b21b0[m hero hizalama duzeltildi
+[33m5a707c6[m hero hizalama duzeltildi
+[33mb33af2b[m apartman ve daire no eklendi
+[33m2b13747[m rentspect tarzi hero tasarim
+[33ma71cc44[m[33m ([m[1;32mclaude/nervous-moser[m[33m)[m Revert "ana sayfa yeni tasarim"
+[33me0f0af5[m ana sayfa yeni tasarim
+[33mf3f08f7[m admin paneline duzenleme ozelligi eklendi
+[33m1424a7b[m onay sistemi aktif edildi
+[33mbd4a80c[m admin paneli eklendi
+[33m56c8999[m yildiz baslangic degeri sifir yapildi
+[33md61e0f5[m adres detayi guncellendi
+[33m8237ffd[m daire no adrese eklendi
+[33mab4d8c9[m properties join duzeltildi
+[33mdc7184c[m properties join duzeltildi
+[33ma16972c[m property-review-form skorlar guncellendi
+[33mb37d480[m property-review-form guncellendi
+[33m3c14f85[m ev detay sorgusu guncellendi
+[33ma051f04[m ReviewRow guncellendi
+[33m2f4300a[m ratings guncellendi
+[33md5605cb[m yorum sorgusu guncellendi
+[33m925af22[m ev sahibi puan sutun adi duzeltildi
+[33mffa0b8f[m puanlama kategorileri guncellendi
+[33m0ad2cb5[m duplicate daire no kaldirildi
+[33mdf40344[m daire no eklendi
+[33m1ac90fe[m ara butonu guncellendi
+[33mcf31cbf[m siralama kaldirildi daire no eklendi
+[33m375ec4c[m supabase adres entegrasyonu
+[33mc9a4219[m turkiyeapi ile mahalle dropdown
+[33m9baadc8[m ilceler sabit veri yapildi
+[33m79addbd[m dropdown duzeltildi
+[33m81ec78f[m proxy API route eklendi
+[33mf1c2127[m yeni API ile dropdown guncellendi
+[33m36a7fd9[m iller yukle duzeltildi
+[33m0f7c0d7[m ana sayfa tradres API dropdown guncellendi
+[33md562b19[m sokak dropdown tradres API eklendi
+[33ma58b9cd[m giris zorunlulugu kaldirildi isim zorunlu yapildi
+[33m9d5c3a9[m yorum ekleme sayfasi guncellendi
+[33m06f83ff[m adres alanlari dropdown yapildi
+[33mf8716d0[m proxy fonksiyon adi duzeltildi
+[33m03cee61[m import yolu duzeltildi
+[33m539f825[m middleware proxy yapildi
+[33m052589a[m ilk yükleme
