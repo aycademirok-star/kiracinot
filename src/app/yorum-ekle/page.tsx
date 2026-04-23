@@ -170,70 +170,114 @@ export default function YorumEklePage() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex items-center gap-3">
-        <button onClick={() => router.back()} className="text-zinc-500 hover:text-zinc-900">← Geri</button>
-        <h1 className="text-2xl font-bold text-zinc-900">Yorum Bırak</h1>
-      </div>
+    <main className="min-h-screen" style={{ backgroundColor: "#fdf8f3" }}>
+      <nav style={{ backgroundColor: "#f97316" }} className="text-white shadow-lg">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3">
+            <div
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-lg"
+              style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+            >
+              🏠
+            </div>
+            <div>
+              <span className="text-lg font-bold tracking-tight">Kiracı Yorum</span>
+              <p className="text-xs leading-none" style={{ color: "#ffd4b8" }}>
+                Kiracıların sesi
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.back()}
+              className="rounded-lg px-4 py-2 text-sm font-semibold transition"
+              style={{ backgroundColor: "rgba(255,255,255,0.18)", color: "white" }}
+            >
+              ← Geri
+            </button>
+            <button
+              onClick={() => router.push("/")}
+              className="rounded-lg px-4 py-2 text-sm font-bold transition shadow"
+              style={{ backgroundColor: "white", color: "#c2440e" }}
+            >
+              Ana Sayfa
+            </button>
+          </div>
+        </div>
+      </nav>
 
-      <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm space-y-6">
+      <section className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+        <div className="rounded-2xl p-5 text-white shadow-sm" style={{ backgroundColor: "#e85d04" }}>
+          <h1 className="text-2xl font-extrabold tracking-tight">Yorum Bırak</h1>
+          <p className="mt-1 text-sm" style={{ color: "#ffe8d6" }}>
+            Deneyimini paylaş, diğer kiracılara yol göster.
+          </p>
+        </div>
+
+        <div className="space-y-6 rounded-2xl border bg-white p-6 shadow-sm" style={{ borderColor: "#fde8d8" }}>
         <div>
           <h2 className="text-lg font-semibold text-zinc-900 mb-3">📍 Adres Bilgileri</h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm text-zinc-600">İl *</label>
+              <label className="mb-1 block text-sm font-medium" style={{ color: "#c2440e" }}>İl *</label>
               <select value={ilId ?? ""} onFocus={illeriYukle} onClick={illeriYukle}
                 onChange={(e) => {
                   const id = Number(e.target.value);
                   const adi = iller.find((i: any) => i._id === id)?.city ?? "";
                   ilSecildi(id, adi);
                 }}
-                className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2">
+                className="h-11 w-full rounded-xl border bg-white px-3 text-sm outline-none transition focus:ring-2"
+                style={{ borderColor: "#fde8d8" }}>
                 <option value="">Seçiniz</option>
                 {iller.map((i: any) => <option key={i._id} value={i._id}>{i.city}</option>)}
               </select>
             </div>
 
             <div>
-              <label className="mb-1 block text-sm text-zinc-600">İlçe *</label>
+              <label className="mb-1 block text-sm font-medium" style={{ color: "#c2440e" }}>İlçe *</label>
               <select value={ilceId ?? ""} disabled={!ilId}
                 onChange={(e) => {
                   const id = Number(e.target.value);
                   const adi = ilceler.find((i: any) => i._id === id)?.name ?? "";
                   ilceSecildi(id, adi);
                 }}
-                className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2 disabled:opacity-50">
+                className="h-11 w-full rounded-xl border bg-white px-3 text-sm outline-none transition focus:ring-2 disabled:opacity-50"
+                style={{ borderColor: "#fde8d8" }}>
                 <option value="">{ilcelerYukleniyor ? "Yükleniyor..." : "Seçiniz"}</option>
                 {ilceler.map((i: any) => <option key={i._id} value={i._id}>{i.name}</option>)}
               </select>
             </div>
 
             <div>
-              <label className="mb-1 block text-sm text-zinc-600">Mahalle *</label>
+              <label className="mb-1 block text-sm font-medium" style={{ color: "#c2440e" }}>Mahalle *</label>
               <select value={mahalleAdi} disabled={!ilceId}
                 onChange={(e) => setMahalleAdi(e.target.value)}
-                className="h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm outline-none ring-blue-600 focus:ring-2 disabled:opacity-50">
+                className="h-11 w-full rounded-xl border bg-white px-3 text-sm outline-none transition focus:ring-2 disabled:opacity-50"
+                style={{ borderColor: "#fde8d8" }}>
                 <option value="">{mahallelerYukleniyor ? "Yükleniyor..." : "Seçiniz"}</option>
                 {mahalleler.map((m: any) => <option key={m._id} value={m.name}>{m.name}</option>)}
               </select>
             </div>
 
             <div>
-              <label className="mb-1 block text-sm text-zinc-600">Sokak / Cadde</label>
+              <label className="mb-1 block text-sm font-medium" style={{ color: "#c2440e" }}>Sokak / Cadde</label>
               <input placeholder="Örn: Atatürk Cad." value={sokakAdi} onChange={(e) => setSokakAdi(e.target.value)}
-                className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
+                className="h-11 w-full rounded-xl border px-4 text-sm outline-none transition focus:ring-2"
+                style={{ borderColor: "#fde8d8" }} />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm text-zinc-600">Apartman No</label>
+              <label className="mb-1 block text-sm font-medium" style={{ color: "#c2440e" }}>Apartman No</label>
               <input placeholder="Örn: 12" value={apartmanNo} onChange={(e) => setApartmanNo(e.target.value)}
-                className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
+                className="h-11 w-full rounded-xl border px-4 text-sm outline-none transition focus:ring-2"
+                style={{ borderColor: "#fde8d8" }} />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm text-zinc-600">Daire No</label>
+              <label className="mb-1 block text-sm font-medium" style={{ color: "#c2440e" }}>Daire No</label>
               <input placeholder="Örn: 5" value={daireNo} onChange={(e) => setDaireNo(e.target.value)}
-                className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
+                className="h-11 w-full rounded-xl border px-4 text-sm outline-none transition focus:ring-2"
+                style={{ borderColor: "#fde8d8" }} />
             </div>
           </div>
         </div>
@@ -257,16 +301,18 @@ export default function YorumEklePage() {
           <h2 className="text-lg font-semibold text-zinc-900 mb-3">💬 Yorumunuz</h2>
           <div className="space-y-3">
             <div>
-              <label className="mb-1 block text-sm text-zinc-600">İsim *</label>
+              <label className="mb-1 block text-sm font-medium" style={{ color: "#c2440e" }}>İsim *</label>
               <input placeholder="Adınızı yazınız" value={yazarAdi} onChange={(e) => setYazarAdi(e.target.value)}
-                className="h-11 w-full rounded-xl border border-zinc-300 px-4 text-sm outline-none ring-blue-600 focus:ring-2" />
+                className="h-11 w-full rounded-xl border px-4 text-sm outline-none transition focus:ring-2"
+                style={{ borderColor: "#fde8d8" }} />
             </div>
             <div>
-              <label className="mb-1 block text-sm text-zinc-600">Yorum *</label>
+              <label className="mb-1 block text-sm font-medium" style={{ color: "#c2440e" }}>Yorum *</label>
               <textarea placeholder="Ev hakkında deneyimlerinizi paylaşın..."
                 value={yorumMetni} onChange={(e) => setYorumMetni(e.target.value)}
                 rows={4}
-                className="w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm outline-none ring-blue-600 focus:ring-2 resize-none" />
+                className="w-full resize-none rounded-xl border px-4 py-3 text-sm outline-none transition focus:ring-2"
+                style={{ borderColor: "#fde8d8" }} />
             </div>
           </div>
         </div>
@@ -275,11 +321,16 @@ export default function YorumEklePage() {
           <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{hata}</p>
         )}
 
-        <button onClick={formuGonder} disabled={yukleniyor}
-          className="w-full h-12 rounded-xl bg-zinc-900 font-medium text-white hover:bg-zinc-700 disabled:opacity-50">
+        <button
+          onClick={formuGonder}
+          disabled={yukleniyor}
+          className="h-12 w-full rounded-xl font-bold text-white transition disabled:opacity-50"
+          style={{ backgroundColor: "#e85d04" }}
+        >
           {yukleniyor ? "Gönderiliyor..." : "Yorumu Gönder"}
         </button>
       </div>
+      </section>
     </main>
   );
 }
