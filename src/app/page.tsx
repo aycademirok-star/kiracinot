@@ -172,9 +172,8 @@ export default function Home() {
           </p>
           <Link href="/yorum-ekle"
             className="mt-6 rounded-xl text-white font-bold text-base shadow-xl transition"
-style={{backgroundColor:"#e85d04", display:"inline-block", padding:"12px 32px", width:"fit-content"}}>
-          
-          Deneyimini Paylaş →
+            style={{backgroundColor:"#e85d04", display:"inline-block", padding:"12px 32px", width:"fit-content"}}>
+            Deneyimini Paylaş →
           </Link>
         </div>
 
@@ -248,6 +247,39 @@ style={{backgroundColor:"#e85d04", display:"inline-block", padding:"12px 32px", 
               <div className="text-xs text-gray-400 mt-0.5">{stat.label}</div>
             </div>
           ))}
+        </div>
+
+        {/* ÖZELLİK KUTULARI */}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+          <Link href="/yorum-ekle" className="rounded-2xl bg-white border p-6 shadow-sm hover:shadow-md transition-all flex gap-4 items-start" style={{borderColor:"#fde8d8"}}>
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{backgroundColor:"#fff0e8"}}>
+              ✍️
+            </div>
+            <div>
+              <h3 className="font-bold text-gray-900">Geri Bildiriminizi Bırakın</h3>
+              <p className="text-sm text-gray-500 mt-1">Deneyiminizi paylaşın, diğer kiracılara yol gösterin. Yorumunuz onay sonrası yayınlanır.</p>
+            </div>
+          </Link>
+
+          <div className="rounded-2xl bg-white border p-6 shadow-sm flex gap-4 items-start" style={{borderColor:"#fde8d8"}}>
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{backgroundColor:"#fff0e8"}}>
+              ⭐
+            </div>
+            <div>
+              <h3 className="font-bold text-gray-900">Gerçek Yorumlar</h3>
+              <p className="text-sm text-gray-500 mt-1">Mülkün durumu, ev sahibi ve yaşam koşulları hakkında gerçek kiracıların yorumlarını okuyun.</p>
+            </div>
+          </div>
+
+          <div className="rounded-2xl bg-white border p-6 shadow-sm flex gap-4 items-start" style={{borderColor:"#fde8d8"}}>
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{backgroundColor:"#fff0e8"}}>
+              🔍
+            </div>
+            <div>
+              <h3 className="font-bold text-gray-900">Kolay Arama</h3>
+              <p className="text-sm text-gray-500 mt-1">İl, ilçe, mahalle ve sokak bazında arama yapın. Puanlamaya göre filtreleyin.</p>
+            </div>
+          </div>
         </div>
 
         {/* YORUMLAR VE PUANLAR */}
