@@ -233,22 +233,6 @@ export default function Home() {
       {/* İÇERİK */}
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8 flex flex-col gap-8">
 
-        {/* İSTATİSTİKLER */}
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {[
-            { label: "Toplam Yorum", value: totalReviews, icon: "💬" },
-            { label: "Değerlendirilen Ev", value: properties.length, icon: "🏘️" },
-            { label: "Aktif İl", value: "81", icon: "📍" },
-            { label: "Ücretsiz", value: "Her Zaman", icon: "✨" },
-          ].map((stat) => (
-            <div key={stat.label} className="rounded-2xl bg-white border shadow-sm p-4 text-center" style={{borderColor:"#fde8d8"}}>
-              <div className="text-2xl mb-1">{stat.icon}</div>
-              <div className="text-xl font-bold" style={{color:"#c2440e"}}>{stat.value}</div>
-              <div className="text-xs text-gray-400 mt-0.5">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-
         {/* ÖZELLİK KUTULARI */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
           <Link href="/yorum-ekle" className="rounded-2xl bg-white border p-6 shadow-sm hover:shadow-md transition-all flex gap-4 items-start" style={{borderColor:"#fde8d8"}}>
@@ -257,7 +241,7 @@ export default function Home() {
             </div>
             <div>
               <h3 className="font-bold text-gray-900">Geri Bildiriminizi Bırakın</h3>
-              <p className="text-sm text-gray-500 mt-1">Deneyiminizi paylaşın, diğer kiracılara yol gösterin. Yorumunuz onay sonrası yayınlanır.</p>
+              <p className="text-sm text-gray-500 mt-1">Deneyiminizi paylaşın, diğer kiracılara yol gösterin. </p>
             </div>
           </Link>
 
@@ -277,7 +261,7 @@ export default function Home() {
             </div>
             <div>
               <h3 className="font-bold text-gray-900">Kolay Arama</h3>
-              <p className="text-sm text-gray-500 mt-1">İl, ilçe, mahalle ve sokak bazında arama yapın. Puanlamaya göre filtreleyin.</p>
+              <p className="text-sm text-gray-500 mt-1">İl, ilçe, mahalle ve sokak bazında arama yapın. </p>
             </div>
           </div>
         </div>
