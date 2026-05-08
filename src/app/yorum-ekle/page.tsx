@@ -145,7 +145,7 @@ export default function YorumEklePage() {
         propertyId = existingProps[0].id;
       } else {
         const { data: newProp, error: propError } = await supabase
-          .from("properties").insert({ il: ilAdi, ilce: ilceAdi, mahalle: mahalleAdi, adres })
+          .from("properties").insert({ il: ilAdi, ilce: ilceAdi, mahalle: mahalleAdi, adres, sokak: sokakAdi, apartman_no: apartmanNo, daire_no: daireNo })
           .select("id").single();
         if (propError) throw propError;
         propertyId = newProp.id;
