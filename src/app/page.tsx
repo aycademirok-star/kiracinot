@@ -96,10 +96,9 @@ export default function Home() {
     if (ilAdi) pq = pq.eq("il", ilAdi);
     if (ilceAdi) pq = pq.eq("ilce", ilceAdi);
     if (mahalleAdi) pq = pq.eq("mahalle", mahalleAdi);
-    if (sokakAdi || apartman) {
-      const q = [sokakAdi, apartman].filter(Boolean).join(" ");
-      pq = pq.ilike("adres", "%" + q + "%");
-    }
+    if (sokakAdi) pq = pq.ilike("sokak", "%" + sokakAdi + "%");
+    if (apartman) pq = pq.eq("apartman_no", apartman);
+    if (daireNo) pq = pq.eq("daire_no", daireNo);
 
     const [{ data: rd, count }, { data: pd }] = await Promise.all([rq, pq]);
 
